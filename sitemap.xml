@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://dreamhaze04.github.io/google22faa6e37b6a8ae7.html</loc>
+    <loc>http://dreamhaze04.github.io/2025/01/20/05/58/12/</loc>
     
     <lastmod>2025-01-22</lastmod>
     
@@ -100,15 +100,6 @@
     <priority>0.6</priority>
   </url>
   
-  <url>
-    <loc>http://dreamhaze04.github.io/2025/01/20/05/58/12/</loc>
-    
-    <lastmod>2025-01-20</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
 
   <url>
     <loc>http://dreamhaze04.github.io/</loc>
@@ -133,13 +124,6 @@
   </url>
   
   <url>
-    <loc>http://dreamhaze04.github.io/tags/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/</loc>
-    <lastmod>2025-01-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://dreamhaze04.github.io/tags/%E7%8A%B6%E5%8E%8Bdp/</loc>
     <lastmod>2025-01-22</lastmod>
     <changefreq>weekly</changefreq>
@@ -148,6 +132,13 @@
   
   <url>
     <loc>http://dreamhaze04.github.io/tags/%E6%8E%92%E5%88%97/</loc>
+    <lastmod>2025-01-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://dreamhaze04.github.io/tags/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/</loc>
     <lastmod>2025-01-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
