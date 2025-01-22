@@ -1318,7 +1318,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #550efc;
+  background: #ffa2be;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2846,4 +2846,15 @@ tbody tr:nth-of-type(odd) {
 .highlight .gutter pre {
   padding-left: 7px;
   padding-right: 7px;
+}
+@media screen and (max-width: 768px) {
+  .highlight-container {
+    margin-left: -30px;
+    margin-right: -30px;
+/* width: calc(100% + 24px); */
+  }
+  pre {
+    font-family: consolas, monospace;
+    font-size: 0.9em;
+  }
 }
