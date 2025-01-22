@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>洛谷P1433-吃奶酪</title>
-    <url>/2025/01/20/05/58/12/</url>
-    <content><![CDATA[<p>这道题在新手题单里面卡了我两个月，原因就是这道题出现在了搜索的板块，但是正规做法是用状态压缩dp来做，于是我就一直搁着，最近算是终于给他解决了，其实这道题本质是和<a href="/2025/01/23/00/35/23/" title="最短Hamilton距离">最短Hamilton距离</a>完全一样，就最后一步有点变化。</p>
-<span id="more"></span>
-<h1 id="吃奶酪"><a
-href="https://www.luogu.com.cn/problem/P1433">吃奶酪</a></h1>
-<h2 id="代码">代码</h2>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">17</span>;</span><br><span class="line"><span class="type">double</span> dp[<span class="number">1</span>&lt;&lt;N][N];</span><br><span class="line"><span class="type">double</span> dis[N][N];</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">memset</span>(dp, <span class="number">0x7f</span>, <span class="built_in">sizeof</span>(dp));</span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n; ++n;</span><br><span class="line">    vector&lt;pair&lt;<span class="type">double</span>, <span class="type">double</span>&gt;&gt; <span class="built_in">a</span>(n<span class="number">+1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">1</span>;i&lt;n;++i) &#123;</span><br><span class="line">        cin &gt;&gt; a[i].first &gt;&gt; a[i].second;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">            dis[i][j] = <span class="built_in">hypot</span>(a[i].first - a[j].first, a[i].second - a[j].second);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    dp[<span class="number">1</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> s=<span class="number">1</span>;s&lt;(<span class="number">1</span>&lt;&lt;n);++s) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((s &gt;&gt; i) &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ((s^(<span class="number">1</span>&lt;&lt;i)) &gt;&gt; j &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                        dp[s][i] = <span class="built_in">min</span>(dp[s][i], dp[s^(<span class="number">1</span>&lt;&lt;i)][j] + dis[j][i]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">double</span> ans = INFINITY;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">        ans = <span class="built_in">min</span>(ans, dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>][i]);</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; fixed &lt;&lt; <span class="built_in">setprecision</span>(<span class="number">2</span>) &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>题解</category>
-      </categories>
-      <tags>
-        <tag>状压dp</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ABC386-F-Operate-K</title>
     <url>/2025/01/21/13/51/54/</url>
     <content><![CDATA[<p>这题在编辑距离的基础上限制了操作步骤，这题的字符串长度在 5e5,
@@ -81,6 +64,53 @@ BFS 就能完美解决。</li>
       </tags>
   </entry>
   <entry>
+    <title>neovide的部分图标缺失问题</title>
+    <url>/2025/01/23/07/01/40/</url>
+    <content><![CDATA[<p>由于默认 neovide
+字体图标不全导致部分图标以<strong>小飞船</strong>的形式出现，我们可以通过下载
+Nerd Font 字体来解决这个问题。</p>
+<span id="more"></span>
+<h1 id="乱码展示">乱码展示</h1>
+<p>以下为乱码，可以看到都是以小飞船的图标展示</p>
+<figure>
+<img src="https://s2.loli.net/2025/01/23/5ZUGnpuSYiRk1lW.png"
+alt="乱码" />
+<figcaption aria-hidden="true">乱码</figcaption>
+</figure>
+<p>以下为修复后的，所有字体都正常，并且保留了连字功能</p>
+<figure>
+<img src="https://s2.loli.net/2025/01/23/BMdXxDhgKiO2sW6.png"
+alt="正常" />
+<figcaption aria-hidden="true">正常</figcaption>
+</figure>
+<h1 id="下载字体">下载字体</h1>
+<p>前往 <span class="exturl" data-url="aHR0cHM6Ly93d3cubmVyZGZvbnRzLmNvbS9mb250LWRvd25sb2Fkcw==">Nerd Font
+官网的下载页面<i class="fa fa-external-link-alt"></i></span>，找到 FiraCode Nerd Font
+字体（该字体支持连字）下载。</p>
+<figure>
+<img src="https://s2.loli.net/2025/01/23/XPDBTsGlf57cAKS.png"
+alt="找字体" />
+<figcaption aria-hidden="true">找字体</figcaption>
+</figure>
+<p>下载后解压文件，全选右键安装</p>
+<figure>
+<img src="https://s2.loli.net/2025/01/23/bwJUmuHAflKzjxe.png"
+alt="安装" />
+<figcaption aria-hidden="true">安装</figcaption>
+</figure>
+<h1 id="配置neovim">配置neovim</h1>
+<p>在 neovim 的配置文件中加入这段代码来设置 neovide
+字体，重启即可生效</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> vim.g.neovide <span class="keyword">then</span> <span class="comment">-- 只对 neovide 起作用</span></span><br><span class="line">    vim.o.guifont = <span class="string">&quot;FiraCode Nerd Font:h14&quot;</span> <span class="comment">-- text below applies for VimScript</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>neovim neovide</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>排列中的循环问题</title>
     <url>/2025/01/21/12/07/10/</url>
     <content><![CDATA[<p>该类问题通常通过一个排列中的一个元素作为索引指向排列中的另外一个元素，这样通常能够构成一个循环</p>
@@ -110,23 +140,6 @@ and the Permutation</a></h2>
       </tags>
   </entry>
   <entry>
-    <title>最短Hamilton距离</title>
-    <url>/2025/01/23/00/35/23/</url>
-    <content><![CDATA[<p>这题可以说是状态压缩的其中一类的板题了</p>
-<span id="more"></span>
-<h1 id="最短hamilton路径"><a
-href="https://www.acwing.com/problem/content/description/93/">最短Hamilton路径</a></h1>
-<h2 id="代码">代码</h2>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">21</span>;</span><br><span class="line"><span class="type">int</span> dis[N][N];</span><br><span class="line"><span class="type">int</span> dp[<span class="number">1</span>&lt;&lt;N][N];</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">memset</span>(dp, <span class="number">0x3f</span>, <span class="built_in">sizeof</span>(dp));</span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">            cin &gt;&gt; dis[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    dp[<span class="number">1</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> s=<span class="number">1</span>;s&lt;(<span class="number">1</span>&lt;&lt;n);++s) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((s &gt;&gt; j) &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> k=<span class="number">0</span>;k&lt;n;++k) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ((s ^ (<span class="number">1</span> &lt;&lt; j)) &gt;&gt; k &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                        dp[s][j] = <span class="built_in">min</span>(dp[s][j], dp[s^(<span class="number">1</span> &lt;&lt; j)][k] + dis[k][j]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>][n - <span class="number">1</span>] &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>题解</category>
-      </categories>
-      <tags>
-        <tag>状压dp</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>最小生成树模板</title>
     <url>/2025/01/21/12/18/51/</url>
     <content><![CDATA[<p>最常用的两个最小生成树算法是 Prim 和
@@ -144,6 +157,40 @@ Kruskal。前者编码较为复杂，用优先队列来维护；后者编码较�
         <tag>最小生成树</tag>
         <tag>模板</tag>
         <tag>图论</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>洛谷P1433-吃奶酪</title>
+    <url>/2025/01/20/05/58/12/</url>
+    <content><![CDATA[<p>这道题在新手题单里面卡了我两个月，原因就是这道题出现在了搜索的板块，但是正规做法是用状态压缩dp来做，于是我就一直搁着，最近算是终于给他解决了，其实这道题本质是和<a href="/2025/01/23/00/35/23/" title="最短Hamilton距离">最短Hamilton距离</a>完全一样，就最后一步有点变化。</p>
+<span id="more"></span>
+<h1 id="吃奶酪"><a
+href="https://www.luogu.com.cn/problem/P1433">吃奶酪</a></h1>
+<h2 id="代码">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">17</span>;</span><br><span class="line"><span class="type">double</span> dp[<span class="number">1</span>&lt;&lt;N][N];</span><br><span class="line"><span class="type">double</span> dis[N][N];</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">memset</span>(dp, <span class="number">0x7f</span>, <span class="built_in">sizeof</span>(dp));</span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n; ++n;</span><br><span class="line">    vector&lt;pair&lt;<span class="type">double</span>, <span class="type">double</span>&gt;&gt; <span class="built_in">a</span>(n<span class="number">+1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">1</span>;i&lt;n;++i) &#123;</span><br><span class="line">        cin &gt;&gt; a[i].first &gt;&gt; a[i].second;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">            dis[i][j] = <span class="built_in">hypot</span>(a[i].first - a[j].first, a[i].second - a[j].second);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    dp[<span class="number">1</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> s=<span class="number">1</span>;s&lt;(<span class="number">1</span>&lt;&lt;n);++s) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((s &gt;&gt; i) &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ((s^(<span class="number">1</span>&lt;&lt;i)) &gt;&gt; j &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                        dp[s][i] = <span class="built_in">min</span>(dp[s][i], dp[s^(<span class="number">1</span>&lt;&lt;i)][j] + dis[j][i]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">double</span> ans = INFINITY;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">        ans = <span class="built_in">min</span>(ans, dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>][i]);</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; fixed &lt;&lt; <span class="built_in">setprecision</span>(<span class="number">2</span>) &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>题解</category>
+      </categories>
+      <tags>
+        <tag>状压dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>最短Hamilton距离</title>
+    <url>/2025/01/23/00/35/23/</url>
+    <content><![CDATA[<p>这题可以说是状态压缩的其中一类的板题了</p>
+<span id="more"></span>
+<h1 id="最短hamilton路径"><a
+href="https://www.acwing.com/problem/content/description/93/">最短Hamilton路径</a></h1>
+<h2 id="代码">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">21</span>;</span><br><span class="line"><span class="type">int</span> dis[N][N];</span><br><span class="line"><span class="type">int</span> dp[<span class="number">1</span>&lt;&lt;N][N];</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">memset</span>(dp, <span class="number">0x3f</span>, <span class="built_in">sizeof</span>(dp));</span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">            cin &gt;&gt; dis[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    dp[<span class="number">1</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> s=<span class="number">1</span>;s&lt;(<span class="number">1</span>&lt;&lt;n);++s) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((s &gt;&gt; j) &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> k=<span class="number">0</span>;k&lt;n;++k) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ((s ^ (<span class="number">1</span> &lt;&lt; j)) &gt;&gt; k &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                        dp[s][j] = <span class="built_in">min</span>(dp[s][j], dp[s^(<span class="number">1</span> &lt;&lt; j)][k] + dis[k][j]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>][n - <span class="number">1</span>] &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>题解</category>
+      </categories>
+      <tags>
+        <tag>状压dp</tag>
       </tags>
   </entry>
   <entry>

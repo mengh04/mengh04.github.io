@@ -20,21 +20,25 @@
     var CONFIG = {"hostname":"dreamhaze04.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="这题在编辑距离的基础上限制了操作步骤，这题的字符串长度在 5e5, 用常规的编辑距离的方法，时空复杂度均为O(mn)，必超时加MLE，所以需要一定的优化。分析可知，dp矩阵只有中间一部分有贡献，其他的部分（i - j &gt; k）中，必然无法在 k 次处理中完成，故可以舍去，因此我们只需要用 dp[n + 1][2K + 1] 的数组就可以完成任务，然后通过自定义的 get_dp 与 s">
+  <meta name="description" content="由于默认 neovide 字体图标不全导致部分图标以小飞船的形式出现，我们可以通过下载 Nerd Font 字体来解决这个问题。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ABC386-F-Operate-K">
-<meta property="og:url" content="http://dreamhaze04.github.io/2025/01/21/13/51/54/index.html">
+<meta property="og:title" content="neovide的部分图标缺失问题">
+<meta property="og:url" content="http://dreamhaze04.github.io/2025/01/23/07/01/40/index.html">
 <meta property="og:site_name" content="mengh04の小窝">
-<meta property="og:description" content="这题在编辑距离的基础上限制了操作步骤，这题的字符串长度在 5e5, 用常规的编辑距离的方法，时空复杂度均为O(mn)，必超时加MLE，所以需要一定的优化。分析可知，dp矩阵只有中间一部分有贡献，其他的部分（i - j &gt; k）中，必然无法在 k 次处理中完成，故可以舍去，因此我们只需要用 dp[n + 1][2K + 1] 的数组就可以完成任务，然后通过自定义的 get_dp 与 s">
+<meta property="og:description" content="由于默认 neovide 字体图标不全导致部分图标以小飞船的形式出现，我们可以通过下载 Nerd Font 字体来解决这个问题。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-01-21T05:51:54.000Z">
-<meta property="article:modified_time" content="2025-01-22T21:20:13.440Z">
+<meta property="og:image" content="https://s2.loli.net/2025/01/23/5ZUGnpuSYiRk1lW.png">
+<meta property="og:image" content="https://s2.loli.net/2025/01/23/BMdXxDhgKiO2sW6.png">
+<meta property="og:image" content="https://s2.loli.net/2025/01/23/XPDBTsGlf57cAKS.png">
+<meta property="og:image" content="https://s2.loli.net/2025/01/23/bwJUmuHAflKzjxe.png">
+<meta property="article:published_time" content="2025-01-22T23:01:40.000Z">
+<meta property="article:modified_time" content="2025-01-22T23:22:39.190Z">
 <meta property="article:author" content="mengh04">
-<meta property="article:tag" content="dp">
-<meta property="article:tag" content="编辑距离">
+<meta property="article:tag" content="neovim neovide">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2025/01/23/5ZUGnpuSYiRk1lW.png">
 
-<link rel="canonical" href="http://dreamhaze04.github.io/2025/01/21/13/51/54/">
+<link rel="canonical" href="http://dreamhaze04.github.io/2025/01/23/07/01/40/">
 
 
 <script id="page-configurations">
@@ -47,7 +51,7 @@
   };
 </script>
 
-  <title>ABC386-F-Operate-K | mengh04の小窝</title>
+  <title>neovide的部分图标缺失问题 | mengh04の小窝</title>
   
 
 
@@ -123,7 +127,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">8</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a>
 
   </li>
         <li class="menu-item menu-item-about">
@@ -133,12 +137,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">11</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">12</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">3</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -195,7 +199,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreamhaze04.github.io/2025/01/21/13/51/54/">
+    <link itemprop="mainEntityOfPage" href="http://dreamhaze04.github.io/2025/01/23/07/01/40/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -208,7 +212,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          ABC386-F-Operate-K
+          neovide的部分图标缺失问题
         </h1>
 
         <div class="post-meta">
@@ -217,23 +221,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2025-01-21 13:51:54" itemprop="dateCreated datePublished" datetime="2025-01-21T13:51:54+08:00">2025-01-21</time>
+              <time title="创建时间：2025-01-23 07:01:40 / 修改时间：07:22:39" itemprop="dateCreated datePublished" datetime="2025-01-23T07:01:40+08:00">2025-01-23</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-01-23 05:20:13" itemprop="dateModified" datetime="2025-01-23T05:20:13+08:00">2025-01-23</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
                 </span>
             </span>
 
@@ -250,7 +248,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>162</span>
+              <span>175</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -269,17 +267,42 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>这题在编辑距离的基础上限制了操作步骤，这题的字符串长度在 5e5,
-用常规的编辑距离的方法，时空复杂度均为O(mn)，必超时加MLE，所以需要一定的优化。分析可知，dp矩阵只有中间一部分有贡献，其他的部分（i
-- j &gt; k）中，必然无法在 k 次处理中完成，故可以舍去，因此我们只需要用
-<code>dp[n + 1][2K + 1]</code> 的数组就可以完成任务，然后通过自定义的
-get_dp 与 set_dp 方法即可联系常规 dp 到 变化后 dp 的关系</p>
+        <p>由于默认 neovide
+字体图标不全导致部分图标以<strong>小飞船</strong>的形式出现，我们可以通过下载
+Nerd Font 字体来解决这个问题。</p>
 <span id="more"></span>
-<h1 id="f---operate-k"><a
-target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc386/tasks/abc386_f">F - Operate
-K</a></h1>
-<h2 id="代码">代码</h2>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> inf = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> k; cin &gt;&gt; k;</span><br><span class="line">    string s, t; cin &gt;&gt; s &gt;&gt; t;</span><br><span class="line">    <span class="type">int</span> n = s.<span class="built_in">size</span>(), m = t.<span class="built_in">size</span>();</span><br><span class="line">    <span class="function">vector <span class="title">dp</span><span class="params">(n + <span class="number">1</span>, vector&lt;<span class="type">int</span>&gt;(<span class="number">2</span> * k + <span class="number">1</span>, inf))</span></span>;</span><br><span class="line">    <span class="keyword">auto</span> get_dp = [&amp;](<span class="type">int</span> i, <span class="type">int</span> j) -&gt; <span class="type">int</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">abs</span>(i - j) &gt; k) <span class="keyword">return</span> inf;</span><br><span class="line">        <span class="keyword">return</span> dp[i][j - i + k];</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">auto</span> set_dp = [&amp;](<span class="type">int</span> i, <span class="type">int</span> j, <span class="type">int</span> x) -&gt; <span class="type">void</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">abs</span>(i - j) &gt; k) <span class="keyword">return</span>;</span><br><span class="line">        dp[i][j - i + k] = x;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">set_dp</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= <span class="built_in">min</span>(m, k); ++ i)&#123;</span><br><span class="line">        <span class="built_in">set_dp</span>(<span class="number">0</span>, i, i);</span><br><span class="line">    &#125;<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= <span class="built_in">min</span>(n, k); ++ i)&#123;</span><br><span class="line">        <span class="built_in">set_dp</span>(<span class="number">0</span>, i, i);</span><br><span class="line">        <span class="built_in">set_dp</span>(i, <span class="number">0</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++ i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> d = <span class="number">0</span>; d &lt;= <span class="number">2</span> * k; ++ d) &#123;</span><br><span class="line">            <span class="type">int</span> j = i - k + d;</span><br><span class="line">            <span class="keyword">if</span> (j &lt;= <span class="number">0</span> || j &gt; m) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (s[i - <span class="number">1</span>] == t[j - <span class="number">1</span>]) &#123;</span><br><span class="line">                <span class="built_in">set_dp</span>(i, j, <span class="built_in">get_dp</span>(i - <span class="number">1</span>, j - <span class="number">1</span>));</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">set_dp</span>(i, j, <span class="built_in">min</span>(&#123;<span class="built_in">get_dp</span>(i - <span class="number">1</span>, j - <span class="number">1</span>), <span class="built_in">get_dp</span>(i - <span class="number">1</span>, j), <span class="built_in">get_dp</span>(i, j - <span class="number">1</span>)&#125;) + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; (<span class="built_in">get_dp</span>(n, m) &lt;= k ? <span class="string">&quot;Yes\n&quot;</span> : <span class="string">&quot;No\n&quot;</span>) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="乱码展示">乱码展示</h1>
+<p>以下为乱码，可以看到都是以小飞船的图标展示</p>
+<figure>
+<img src="https://s2.loli.net/2025/01/23/5ZUGnpuSYiRk1lW.png"
+alt="乱码" />
+<figcaption aria-hidden="true">乱码</figcaption>
+</figure>
+<p>以下为修复后的，所有字体都正常，并且保留了连字功能</p>
+<figure>
+<img src="https://s2.loli.net/2025/01/23/BMdXxDhgKiO2sW6.png"
+alt="正常" />
+<figcaption aria-hidden="true">正常</figcaption>
+</figure>
+<h1 id="下载字体">下载字体</h1>
+<p>前往 <span class="exturl" data-url="aHR0cHM6Ly93d3cubmVyZGZvbnRzLmNvbS9mb250LWRvd25sb2Fkcw==">Nerd Font
+官网的下载页面<i class="fa fa-external-link-alt"></i></span>，找到 FiraCode Nerd Font
+字体（该字体支持连字）下载。</p>
+<figure>
+<img src="https://s2.loli.net/2025/01/23/XPDBTsGlf57cAKS.png"
+alt="找字体" />
+<figcaption aria-hidden="true">找字体</figcaption>
+</figure>
+<p>下载后解压文件，全选右键安装</p>
+<figure>
+<img src="https://s2.loli.net/2025/01/23/bwJUmuHAflKzjxe.png"
+alt="安装" />
+<figcaption aria-hidden="true">安装</figcaption>
+</figure>
+<h1 id="配置neovim">配置neovim</h1>
+<p>在 neovim 的配置文件中加入这段代码来设置 neovide
+字体，重启即可生效</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> vim.g.neovide <span class="keyword">then</span> <span class="comment">-- 只对 neovide 起作用</span></span><br><span class="line">    vim.o.guifont = <span class="string">&quot;FiraCode Nerd Font:h14&quot;</span> <span class="comment">-- text below applies for VimScript</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -290,8 +313,7 @@ K</a></h1>
       <footer class="post-footer">
           
           <div class="post-tags">
-              <a href="/tags/dp/" rel="tag"><i class="fa fa-tag"></i> dp</a>
-              <a href="/tags/%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" rel="tag"><i class="fa fa-tag"></i> 编辑距离</a>
+              <a href="/tags/neovim-neovide/" rel="tag"><i class="fa fa-tag"></i> neovim neovide</a>
           </div>
 
         
@@ -300,13 +322,10 @@ K</a></h1>
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2025/01/21/12/18/51/" rel="prev" title="最小生成树模板">
-      <i class="fa fa-chevron-left"></i> 最小生成树模板
+    <a href="/2025/01/23/00/35/23/" rel="prev" title="最短Hamilton距离">
+      <i class="fa fa-chevron-left"></i> 最短Hamilton距离
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2025/01/21/13/55/32/" rel="next" title="素数筛">
-      素数筛 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -366,8 +385,7 @@ K</a></h1>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#f---operate-k"><span class="nav-number">1.</span> <span class="nav-text">F - Operate
-K</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">代码</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B9%B1%E7%A0%81%E5%B1%95%E7%A4%BA"><span class="nav-number">1.</span> <span class="nav-text">乱码展示</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%AD%97%E4%BD%93"><span class="nav-number">2.</span> <span class="nav-text">下载字体</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEneovim"><span class="nav-number">3.</span> <span class="nav-text">配置neovim</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -383,20 +401,20 @@ K</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -452,7 +470,7 @@ K</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4 分钟</span>
+    <span title="站点阅读时长">5 分钟</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
   </div>
@@ -598,7 +616,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'blog-comments-repo',
       owner       : 'dreamhaze04',
       admin       : ['dreamhaze04'],
-      id          : '7ca30ae6756bfbfa2993c9e5dcde5aa5',
+      id          : '09be3c158bd9c6f48818678b74a7fa9c',
         language: 'zh-CN',
       distractionFreeMode: true
     });
