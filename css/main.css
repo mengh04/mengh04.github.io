@@ -1318,7 +1318,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #ff91ff;
+  background: #a6ff8b;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2857,4 +2857,20 @@ tbody tr:nth-of-type(odd) {
     font-family: consolas, monospace;
     font-size: 0.9em;
   }
+}
+.highlight[data-lang]::before {
+  content: attr(data-lang);
+  line-height: 32px;
+  background: rgba(52,56,63,0);
+  color: #fff;
+  font-size: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: bold;
+  padding: 0px 70px;
+  text-indent: 10px;
+  float: left;
+  text-transform: uppercase;
 }

@@ -293,7 +293,22 @@ Nerd Font 字体来解决这个问题。</p>
 
     
     
-    
+    <script>
+  // 等待 DOM 内容加载完成后执行脚本
+  document.addEventListener('DOMContentLoaded', function () {
+    // 1. 获取所有的代码块 (.highlight)
+    document.querySelectorAll('.highlight').forEach(block => {
+      // 2. 使用正则表达式从 class 中提取语言信息
+      const match = block.className.match(/highlight (\w+)/); // 查找类似 'highlight python' 中的 python
+      const language = match ? match[1] : 'plaintext'; // 如果没有找到语言，则默认设置为 'plaintext'
+
+      // 3. 将语言类型存储到 block 的 data-lang 属性中
+      block.setAttribute('data-lang', language); // 将语言类型存储到 data-lang 中
+    });
+  });
+</script>
+
+
 
       <footer class="post-footer">
           
