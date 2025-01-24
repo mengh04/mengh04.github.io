@@ -20,22 +20,19 @@
     var CONFIG = {"hostname":"dreamhaze04.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="最常用的两个最小生成树算法是 Prim 和 Kruskal。前者编码较为复杂，用优先队列来维护；后者编码较容易，用并查集来维护。">
+  <meta name="description" content="左闭右开区间的好处 在算法竞赛中，采用左闭右开区间（[l, r)）是一种常见的约定，有以下几个主要好处： 1. 区间长度计算更直观 左闭右开区间的长度可以简单地通过公式 r - l 计算，而不需要再加 1。例如： - 对于区间 [2, 5)，长度是 5 - 2 &#x3D; 3，对应 2, 3, 4。 - 如果使用左闭右闭区间 [2, 4]，计算长度则需要用公式 r - l + 1。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="最小生成树模板">
-<meta property="og:url" content="http://dreamhaze04.github.io/2025/01/21/12/18/51/index.html">
+<meta property="og:title" content="算法竞赛中左闭右开区间的好处">
+<meta property="og:url" content="http://dreamhaze04.github.io/2025/01/24/13/02/51/index.html">
 <meta property="og:site_name" content="mengh04の小窝">
-<meta property="og:description" content="最常用的两个最小生成树算法是 Prim 和 Kruskal。前者编码较为复杂，用优先队列来维护；后者编码较容易，用并查集来维护。">
+<meta property="og:description" content="左闭右开区间的好处 在算法竞赛中，采用左闭右开区间（[l, r)）是一种常见的约定，有以下几个主要好处： 1. 区间长度计算更直观 左闭右开区间的长度可以简单地通过公式 r - l 计算，而不需要再加 1。例如： - 对于区间 [2, 5)，长度是 5 - 2 &#x3D; 3，对应 2, 3, 4。 - 如果使用左闭右闭区间 [2, 4]，计算长度则需要用公式 r - l + 1。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-01-21T04:18:51.000Z">
-<meta property="article:modified_time" content="2025-01-22T21:20:21.334Z">
+<meta property="article:published_time" content="2025-01-24T05:02:51.000Z">
+<meta property="article:modified_time" content="2025-01-24T05:06:00.419Z">
 <meta property="article:author" content="mengh04">
-<meta property="article:tag" content="最小生成树">
-<meta property="article:tag" content="模板">
-<meta property="article:tag" content="图论">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://dreamhaze04.github.io/2025/01/21/12/18/51/">
+<link rel="canonical" href="http://dreamhaze04.github.io/2025/01/24/13/02/51/">
 
 
 <script id="page-configurations">
@@ -48,7 +45,7 @@
   };
 </script>
 
-  <title>最小生成树模板 | mengh04の小窝</title>
+  <title>算法竞赛中左闭右开区间的好处 | mengh04の小窝</title>
   
 
 
@@ -196,7 +193,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://dreamhaze04.github.io/2025/01/21/12/18/51/">
+    <link itemprop="mainEntityOfPage" href="http://dreamhaze04.github.io/2025/01/24/13/02/51/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -209,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          最小生成树模板
+          算法竞赛中左闭右开区间的好处
         </h1>
 
         <div class="post-meta">
@@ -218,16 +215,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2025-01-21 12:18:51" itemprop="dateCreated datePublished" datetime="2025-01-21T12:18:51+08:00">2025-01-21</time>
+              <time title="创建时间：2025-01-24 13:02:51 / 修改时间：13:06:00" itemprop="dateCreated datePublished" datetime="2025-01-24T13:02:51+08:00">2025-01-24</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-01-23 05:20:21" itemprop="dateModified" datetime="2025-01-23T05:20:21+08:00">2025-01-23</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -251,14 +242,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>50</span>
+              <span>549</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -270,13 +261,50 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>最常用的两个最小生成树算法是 Prim 和
-Kruskal。前者编码较为复杂，用优先队列来维护；后者编码较容易，用并查集来维护。</p>
-<span id="more"></span>
-<h1 id="prim">Prim</h1>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n, m; cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    vector&lt;vector&lt;pair&lt;<span class="type">int</span>, i64&gt;&gt;&gt; <span class="built_in">adj</span>(n);</span><br><span class="line">    <span class="keyword">while</span> (m --) &#123;</span><br><span class="line">        <span class="type">int</span> u, v, w; cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;</span><br><span class="line">        -- u, -- v;</span><br><span class="line">        adj[u].<span class="built_in">emplace_back</span>(v, w);</span><br><span class="line">        adj[v].<span class="built_in">emplace_back</span>(u, w);</span><br><span class="line">    &#125;</span><br><span class="line">    priority_queue&lt;pair&lt;i64, <span class="type">int</span>&gt;, vector&lt;pair&lt;i64, <span class="type">int</span>&gt;&gt;, greater&lt;&gt;&gt; q;</span><br><span class="line">    q.<span class="built_in">emplace</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">done</span><span class="params">(n)</span></span>;</span><br><span class="line">    i64 ans = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (q.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">auto</span> [d, x] = q.<span class="built_in">top</span>(); q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">if</span> (done[x]) <span class="keyword">continue</span>;</span><br><span class="line">        done[x] = <span class="literal">true</span>;</span><br><span class="line">        ans += d;</span><br><span class="line">        ++ cnt;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> [y, w] : adj[x]) &#123;</span><br><span class="line">            q.<span class="built_in">emplace</span>(w, y);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cnt == n) cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">else</span> cout &lt;&lt; <span class="string">&quot;orz\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h1 id="kruskal">Kruskal</h1>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">5010</span>, M = <span class="number">2e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">DSU</span> &#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; f, siz;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">DSU</span>() &#123;&#125;</span><br><span class="line">    <span class="built_in">DSU</span>(<span class="type">int</span> n) &#123;</span><br><span class="line">        <span class="built_in">init</span>(n);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        f.<span class="built_in">resize</span>(n);</span><br><span class="line">        std::<span class="built_in">iota</span>(f.<span class="built_in">begin</span>(), f.<span class="built_in">end</span>(), <span class="number">0</span>);</span><br><span class="line">        siz.<span class="built_in">assign</span>(n, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (x != f[x]) &#123;</span><br><span class="line">            x = f[x] = f[f[x]];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">same</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">find</span>(x) == <span class="built_in">find</span>(y);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> </span>&#123;</span><br><span class="line">        x = <span class="built_in">find</span>(x);</span><br><span class="line">        y = <span class="built_in">find</span>(y);</span><br><span class="line">        <span class="keyword">if</span> (x == y) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        siz[x] += siz[y];</span><br><span class="line">        f[y] = x;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">size</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> siz[<span class="built_in">find</span>(x)];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Edge</span>&#123;</span><br><span class="line">    <span class="type">int</span> u, v, w;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n, m; cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">auto</span> dsu = <span class="built_in">DSU</span>(n + <span class="number">1</span>);</span><br><span class="line">    <span class="function">vector&lt;Edge&gt; <span class="title">edge</span><span class="params">(m)</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;m;++i) &#123;</span><br><span class="line">        cin &gt;&gt; edge[i].u &gt;&gt; edge[i].v &gt;&gt; edge[i].w;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(edge.<span class="built_in">begin</span>(), edge.<span class="built_in">end</span>(), [](Edge &amp;a, Edge &amp;b) &#123; <span class="keyword">return</span> a.w &lt; b.w; &#125;);</span><br><span class="line">    <span class="type">int</span> ans = <span class="number">0</span>, cnt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;m;++i) &#123;</span><br><span class="line">        <span class="keyword">auto</span> [u, v, w] = edge[i];</span><br><span class="line">        <span class="keyword">if</span> (dsu.<span class="built_in">same</span>(u, v)) <span class="keyword">continue</span>;</span><br><span class="line">        ans += w;</span><br><span class="line">        dsu.<span class="built_in">merge</span>(u, v);</span><br><span class="line">        ++ cnt;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cnt == n - <span class="number">1</span>) cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">else</span> cout &lt;&lt; <span class="string">&quot;orz\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h1 id="左闭右开区间的好处">左闭右开区间的好处</h1>
+<p>在算法竞赛中，采用<strong>左闭右开区间</strong>（[l,
+r)）是一种常见的约定，有以下几个主要好处：</p>
+<h2 id="区间长度计算更直观">1. 区间长度计算更直观</h2>
+<p>左闭右开区间的长度可以简单地通过公式 <code>r - l</code>
+计算，而不需要再加 1。例如：<br />
+- 对于区间 [2, 5)，长度是 <code>5 - 2 = 3</code>，对应 2, 3, 4。<br />
+- 如果使用左闭右闭区间 [2, 4]，计算长度则需要用公式
+<code>r - l + 1</code>。</p>
+<hr />
+<h2 id="便于分割区间">2. 便于分割区间</h2>
+<p>左闭右开区间在分割时不会产生重叠，容易维护。例如：<br />
+- 区间 [l, m) 和 [m, r) 是严格不重叠的，起点 <code>m</code>
+不会同时属于两个区间。<br />
+- 若使用左闭右闭区间 [l, m] 和 [m + 1,
+r]，则需要对区间端点进行额外处理。</p>
+<hr />
+<h2 id="与常用-stl-接口兼容">3. 与常用 STL 接口兼容</h2>
+<p>在 C++ STL
+中，大多数容器和算法的操作也是基于左闭右开区间设计的，例如：<br />
+- <code>std::vector</code> 的 <code>begin()</code> 和
+<code>end()</code>，<code>end()</code>
+指向的是超出最后一个元素的下一个位置。<br />
+- <code>std::lower_bound</code> 和 <code>std::upper_bound</code>
+通常会返回左闭右开的范围。</p>
+<p>这种统一的约定让代码更易于理解和维护。</p>
+<hr />
+<h2 id="边界处理更方便">4. 边界处理更方便</h2>
+<p>当一个区间为空时，左闭右开区间自然满足
+<code>l == r</code>，表示区间无效。而对于左闭右闭区间，可能需要特殊处理空区间的逻辑。<br />
+例如：<br />
+- [2, 2) 是一个空区间，不需要额外的条件判断。<br />
+- 如果使用左闭右闭区间 [2, 1] 来表示空区间，就显得不直观。</p>
+<hr />
+<h2 id="适配数学和逻辑简洁性">5. 适配数学和逻辑简洁性</h2>
+<p>在某些情况下，左闭右开区间更符合数学上的定义。例如：<br />
+- 对于循环、二分查找等算法，条件如 <code>while (l &lt; r)</code> 或
+<code>for (int i = l; i &lt; r; ++i)</code>
+更加简洁，不需要额外处理边界。</p>
+<hr />
+<h2 id="总结">总结</h2>
+<p><strong>左闭右开区间的主要优点是计算简洁、逻辑清晰、便于维护和分割，且能更好地与
+STL 接口兼容。</strong><br />
+这些特性使得左闭右开成为算法竞赛和工程开发中的首选方式。</p>
 
     </div>
 
@@ -300,12 +328,6 @@ Kruskal。前者编码较为复杂，用优先队列来维护；后者编码较�
 
 
       <footer class="post-footer">
-          
-          <div class="post-tags">
-              <a href="/tags/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/" rel="tag"><i class="fa fa-tag"></i> 最小生成树</a>
-              <a href="/tags/%E6%A8%A1%E6%9D%BF/" rel="tag"><i class="fa fa-tag"></i> 模板</a>
-              <a href="/tags/%E5%9B%BE%E8%AE%BA/" rel="tag"><i class="fa fa-tag"></i> 图论</a>
-          </div>
 
         
 
@@ -313,13 +335,10 @@ Kruskal。前者编码较为复杂，用优先队列来维护；后者编码较�
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2025/01/21/12/07/10/" rel="prev" title="排列中的循环问题">
-      <i class="fa fa-chevron-left"></i> 排列中的循环问题
+    <a href="/2025/01/24/11/50/35/" rel="prev" title="线段树模板及常见题型">
+      <i class="fa fa-chevron-left"></i> 线段树模板及常见题型
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2025/01/21/13/51/54/" rel="next" title="ABC386-F-Operate-K">
-      ABC386-F-Operate-K <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -379,7 +398,7 @@ Kruskal。前者编码较为复杂，用优先队列来维护；后者编码较�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#prim"><span class="nav-number">1.</span> <span class="nav-text">Prim</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kruskal"><span class="nav-number">2.</span> <span class="nav-text">Kruskal</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A6%E9%97%AD%E5%8F%B3%E5%BC%80%E5%8C%BA%E9%97%B4%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">1.</span> <span class="nav-text">左闭右开区间的好处</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E9%95%BF%E5%BA%A6%E8%AE%A1%E7%AE%97%E6%9B%B4%E7%9B%B4%E8%A7%82"><span class="nav-number">1.1.</span> <span class="nav-text">1. 区间长度计算更直观</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%BF%E4%BA%8E%E5%88%86%E5%89%B2%E5%8C%BA%E9%97%B4"><span class="nav-number">1.2.</span> <span class="nav-text">2. 便于分割区间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E%E5%B8%B8%E7%94%A8-stl-%E6%8E%A5%E5%8F%A3%E5%85%BC%E5%AE%B9"><span class="nav-number">1.3.</span> <span class="nav-text">3. 与常用 STL 接口兼容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%B9%E7%95%8C%E5%A4%84%E7%90%86%E6%9B%B4%E6%96%B9%E4%BE%BF"><span class="nav-number">1.4.</span> <span class="nav-text">4. 边界处理更方便</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%82%E9%85%8D%E6%95%B0%E5%AD%A6%E5%92%8C%E9%80%BB%E8%BE%91%E7%AE%80%E6%B4%81%E6%80%A7"><span class="nav-number">1.5.</span> <span class="nav-text">5. 适配数学和逻辑简洁性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.6.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -610,7 +629,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'blog-comments-repo',
       owner       : 'dreamhaze04',
       admin       : ['dreamhaze04'],
-      id          : '39c90f5bdbdbf03598d8b0489547fb1e',
+      id          : '91c61bb4812c5a36d4b0dcad36740abd',
         language: 'zh-CN',
       distractionFreeMode: true
     });
