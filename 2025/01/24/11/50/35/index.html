@@ -28,7 +28,7 @@
 <meta property="og:description" content="这里包含了线段树的模板以及常见题型">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-01-24T03:50:35.000Z">
-<meta property="article:modified_time" content="2025-01-24T05:06:46.088Z">
+<meta property="article:modified_time" content="2025-01-28T07:18:41.000Z">
 <meta property="article:author" content="mengh04">
 <meta property="article:tag" content="线段树">
 <meta name="twitter:card" content="summary">
@@ -122,7 +122,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">11</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">16</span></a>
 
   </li>
         <li class="menu-item menu-item-about">
@@ -132,7 +132,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">14</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">18</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -216,10 +216,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2025-01-24 11:50:35 / 修改时间：13:06:46" itemprop="dateCreated datePublished" datetime="2025-01-24T11:50:35+08:00">2025-01-24</time>
+              <time title="创建时间：2025-01-24 11:50:35" itemprop="dateCreated datePublished" datetime="2025-01-24T11:50:35+08:00">2025-01-24</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-28 15:18:41" itemprop="dateModified" datetime="2025-01-28T15:18:41+08:00">2025-01-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -247,7 +253,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>48</span>
+              <span>70</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -270,11 +276,14 @@
 <span id="more"></span>
 <h1 id="模板">模板</h1>
 <h2 id="懒标记线段树">懒标记线段树</h2>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">LazySegmentTree</span> &#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    vector&lt;Info&gt; info;</span><br><span class="line">    vector&lt;Tag&gt; tag;</span><br><span class="line">    <span class="built_in">LazySegmentTree</span>() : <span class="built_in">n</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="built_in">LazySegmentTree</span>(<span class="type">int</span> n_, Info v_ = <span class="built_in">Info</span>()) &#123;</span><br><span class="line">        <span class="built_in">init</span>(n_, v_);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">(<span class="type">int</span> n_, Info v_ = Info())</span> </span>&#123;</span><br><span class="line">        <span class="built_in">init</span>(<span class="built_in">vector</span>(n_, v_));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</span></span><br><span class="line"><span class="function">    <span class="title">LazySegmentTree</span><span class="params">(vector&lt;T&gt; init_)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">init</span>(init_);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</span></span><br><span class="line"><span class="function">    <span class="type">void</span> <span class="title">init</span><span class="params">(vector&lt;T&gt; init_)</span> </span>&#123;</span><br><span class="line">        n = init_.<span class="built_in">size</span>();</span><br><span class="line">        info.<span class="built_in">assign</span>(<span class="number">4</span> &lt;&lt; __lg(n), <span class="built_in">Info</span>());</span><br><span class="line">        tag.<span class="built_in">assign</span>(<span class="number">4</span> &lt;&lt; __lg(n), <span class="built_in">Tag</span>());</span><br><span class="line">        function&lt;<span class="type">void</span>(<span class="type">int</span>, <span class="type">int</span>, <span class="type">int</span>)&gt; build = [&amp;](<span class="type">int</span> p, <span class="type">int</span> l, <span class="type">int</span> r) &#123;</span><br><span class="line">            <span class="keyword">if</span> (r - l == <span class="number">1</span>) &#123;</span><br><span class="line">                info[p] = init_[l];</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">int</span> m = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">            <span class="built_in">build</span>(p &lt;&lt; <span class="number">1</span>, l, m);</span><br><span class="line">            <span class="built_in">build</span>(p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>, m, r);</span><br><span class="line">            <span class="built_in">pull</span>(p);</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="built_in">build</span>(<span class="number">1</span>, <span class="number">0</span>, n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">pull</span><span class="params">(<span class="type">int</span> p)</span> </span>&#123;</span><br><span class="line">        info[p] = info[p &lt;&lt; <span class="number">1</span>] + info[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">apply</span><span class="params">(<span class="type">int</span> p, <span class="type">const</span> Tag &amp; v)</span> </span>&#123;</span><br><span class="line">        info[p].<span class="built_in">apply</span>(v);</span><br><span class="line">        tag[p].<span class="built_in">apply</span>(v);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">push</span><span class="params">(<span class="type">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">apply</span>(p &lt;&lt; <span class="number">1</span>, tag[p]);</span><br><span class="line">        <span class="built_in">apply</span>(p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>, tag[p]);</span><br><span class="line">        tag[p] = <span class="built_in">Tag</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">Info <span class="title">rangeQuery</span><span class="params">(<span class="type">int</span> p, <span class="type">int</span> l, <span class="type">int</span> r, <span class="type">int</span> x, <span class="type">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l &gt;= y || r &lt;= x) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">Info</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (l &gt;= x &amp;&amp; r &lt;= y) &#123;</span><br><span class="line">            <span class="keyword">return</span> info[p];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> m  = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">push</span>(p);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">rangeQuery</span>(p &lt;&lt; <span class="number">1</span>, l, m, x, y) + <span class="built_in">rangeQuery</span>(p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>, m, r, x, y);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">Info <span class="title">rangeQuery</span><span class="params">(<span class="type">int</span> l, <span class="type">int</span> r)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">rangeQuery</span>(<span class="number">1</span>, <span class="number">0</span>, n, l, r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">rangeApply</span><span class="params">(<span class="type">int</span> p, <span class="type">int</span> l, <span class="type">int</span> r, <span class="type">int</span> x, <span class="type">int</span> y, <span class="type">const</span> Tag &amp; v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l &gt;= y || r &lt;= x) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (x &lt;= l &amp;&amp; r &lt;= y) &#123;</span><br><span class="line">            <span class="built_in">apply</span>(p, v);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> m = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">push</span>(p);</span><br><span class="line">        <span class="built_in">rangeApply</span>(p &lt;&lt; <span class="number">1</span>, l, m, x, y, v);</span><br><span class="line">        <span class="built_in">rangeApply</span>(p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>, m, r, x, y, v);</span><br><span class="line">        <span class="built_in">pull</span>(p);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">rangeApply</span><span class="params">(<span class="type">int</span> l, <span class="type">int</span> r, <span class="type">const</span> Tag &amp; v)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">rangeApply</span>(<span class="number">1</span>, <span class="number">0</span>, n, l, r, v);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 以下根据不同需求来写</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Tag</span> &#123;</span><br><span class="line">    <span class="type">int</span> add = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">apply</span><span class="params">(<span class="type">const</span> Tag &amp; t)</span> &amp; </span>&#123;</span><br><span class="line">        add += t.add;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Info</span> &#123;</span><br><span class="line">    i64 sum = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> len = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">Info</span> () &#123;&#125;</span><br><span class="line">    <span class="built_in">Info</span> (i64 sum_, <span class="type">int</span> len_ = <span class="number">1</span>) : <span class="built_in">sum</span>(sum_), <span class="built_in">len</span>(len_) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">apply</span><span class="params">(<span class="type">const</span> Tag &amp; t)</span> &amp; </span>&#123;</span><br><span class="line">        sum += t.add * len;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Info <span class="keyword">operator</span> + (<span class="type">const</span> Info &amp; a, <span class="type">const</span> Info &amp; b) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;a.sum + b.sum, a.len + b.len&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="常见题型">常见题型</h1>
 <h2 id="区间加-区间求和">区间加 + 区间求和</h2>
 <p>例题：<span class="exturl" data-url="aHR0cHM6Ly93d3cubHVvZ3UuY29tLmNuL3Byb2JsZW0vUDMzNzI=">洛谷 P3372
 【模板】线段树 1<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="区间加-区间修改-区间最大值">区间加 + 区间修改 + 区间最大值</h2>
+<p>例题：<span class="exturl" data-url="aHR0cHM6Ly93d3cubHVvZ3UuY29tLmNuL3Byb2JsZW0vUDEyNTM=">洛谷 P1253
+扶苏的问题<i class="fa fa-external-link-alt"></i></span></p>
 
     </div>
 
@@ -375,7 +384,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.</span> <span class="nav-text">模板</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%87%92%E6%A0%87%E8%AE%B0%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-number">1.1.</span> <span class="nav-text">懒标记线段树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">常见题型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E5%8A%A0-%E5%8C%BA%E9%97%B4%E6%B1%82%E5%92%8C"><span class="nav-number">2.1.</span> <span class="nav-text">区间加 + 区间求和</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E6%9D%BF"><span class="nav-number">1.</span> <span class="nav-text">模板</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%87%92%E6%A0%87%E8%AE%B0%E7%BA%BF%E6%AE%B5%E6%A0%91"><span class="nav-number">1.1.</span> <span class="nav-text">懒标记线段树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%A2%98%E5%9E%8B"><span class="nav-number">2.</span> <span class="nav-text">常见题型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E5%8A%A0-%E5%8C%BA%E9%97%B4%E6%B1%82%E5%92%8C"><span class="nav-number">2.1.</span> <span class="nav-text">区间加 + 区间求和</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BA%E9%97%B4%E5%8A%A0-%E5%8C%BA%E9%97%B4%E4%BF%AE%E6%94%B9-%E5%8C%BA%E9%97%B4%E6%9C%80%E5%A4%A7%E5%80%BC"><span class="nav-number">2.2.</span> <span class="nav-text">区间加 + 区间修改 + 区间最大值</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -391,7 +400,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">16</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -404,7 +413,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -455,12 +464,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">2k</span>
+    <span title="站点总字数">4k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">7 分钟</span>
+    <span title="站点阅读时长">15 分钟</span>
 </div>
   <div class="powered-by">由 <span class="exturl theme-link" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl theme-link" data-url="aHR0cHM6Ly9waXNjZXMudGhlbWUtbmV4dC5vcmc=">NexT.Pisces</span> 强力驱动
   </div>
