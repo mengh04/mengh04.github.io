@@ -449,11 +449,11 @@ href="https://www.luogu.com.cn/problem/P1433">吃奶酪</a></h1>
   <entry>
     <title>git 常见用法</title>
     <url>/2025/07/18/22/29/47/</url>
-    <content><![CDATA[<h2 id="引言">引言</h2>
-<p>Git
+    <content><![CDATA[<p>Git
 是当今世界上最流行、最强大的分布式版本控制系统（DVCS）。无论你是个人开发者还是大型团队的一员，Git
 都能帮助你高效地管理项目代码、跟踪历史记录以及协作开发。本指南将介绍 Git
 的核心概念和最常见的命令，帮助你快速上手。</p>
+<span id="more"></span>
 <h2 id="核心概念">核心概念</h2>
 <p>理解 Git 的三个主要区域至关重要：</p>
 <ol type="1">
@@ -557,9 +557,9 @@ Repository)</strong>：保存了项目所有版本历史记录的数据库，位
   <entry>
     <title>Markdown 中 LaTeX 数学公式常用符号</title>
     <url>/2025/01/27/13/27/03/</url>
-    <content><![CDATA[<h2 id="引言">引言</h2>
-<p>在 Markdown 中，我们可以借助 MathJax 或 KaTeX 等工具来渲染 LaTeX
+    <content><![CDATA[<p>在 Markdown 中，我们可以借助 MathJax 或 KaTeX 等工具来渲染 LaTeX
 格式的数学公式。这使得在技术博客、学术笔记和在线文档中展示复杂的数学表达式变得非常方便。公式分为两种：</p>
+<span id="more"></span>
 <ol type="1">
 <li><strong>行内公式</strong>：使用一对美元符号 <code>$...$</code>
 包裹，嵌入在文本行中。例如 <code>f(x) = x^2</code> 会显示为 <span
