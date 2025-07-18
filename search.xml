@@ -1,0 +1,1336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>拓扑排序</title>
+    <url>/2025/01/21/08/19/03/</url>
+    <content><![CDATA[<p>在不保证字典序的时候可以使用 dfs 或者
+kahn(基于bfs)，当需要满足字典序时可用优先队列维护</p>
+<span id="more"></span>
+<h1 id="拓扑排序">拓扑排序</h1>
+<h2 id="kahn">Kahn</h2>
+<p>例题：<a
+href="https://vjudge.net/problem/HDU-1285">确定比赛名次</a></p>
+<h3 id="代码">代码</h3>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n, m;</span><br><span class="line">    <span class="keyword">while</span> (cin &gt;&gt; n &gt;&gt; m) &#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">adj</span>(n);</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">degree</span><span class="params">(n)</span></span>;</span><br><span class="line">        <span class="keyword">while</span> (m --) &#123;</span><br><span class="line">            <span class="type">int</span> u, v; cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">            -- u, -- v;</span><br><span class="line">            adj[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">            degree[v] ++;</span><br><span class="line">        &#125;</span><br><span class="line">        priority_queue&lt;<span class="type">int</span>, vector&lt;<span class="type">int</span>&gt;, greater&lt;&gt;&gt; q;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!degree[i]) q.<span class="built_in">push</span>(i);</span><br><span class="line">        &#125;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">while</span> (q.<span class="built_in">size</span>()) &#123;</span><br><span class="line">            <span class="type">int</span> x = q.<span class="built_in">top</span>(); q.<span class="built_in">pop</span>();</span><br><span class="line">            ans.<span class="built_in">push_back</span>(x);</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> y : adj[x]) &#123;</span><br><span class="line">                -- degree[y];</span><br><span class="line">                <span class="keyword">if</span> (!degree[y]) &#123;</span><br><span class="line">					q.<span class="built_in">push</span>(y);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; ans.<span class="built_in">size</span>(); ++ i) &#123;</span><br><span class="line">            cout &lt;&lt; ans[i] + <span class="number">1</span> &lt;&lt; <span class="string">&quot; \n&quot;</span>[i == (<span class="type">int</span>)ans.<span class="built_in">size</span>() - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="利用拓扑排序判断连通性">利用拓扑排序判断连通性</h2>
+<p><img src="https://s2.loli.net/2025/01/21/Vl4cz2pIdvoOyTg.png" /></p>
+<p>例题：<span class="exturl" data-url="aHR0cHM6Ly9jb2RlZm9yY2VzLmNvbS9wcm9ibGVtc2V0L3Byb2JsZW0vMTkzMS9G">Chat
+Screenshots<i class="fa fa-external-link-alt"></i></span></p>
+<h3 id="代码-1">代码</h3>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n, K; cin &gt;&gt; n &gt;&gt; K;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">adj</span>(n);</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">degree</span><span class="params">(n)</span></span>;</span><br><span class="line">    <span class="keyword">while</span> (K --) &#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">a</span><span class="params">(n)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">            cin &gt;&gt; a[i];</span><br><span class="line">            -- a[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; n - <span class="number">1</span>; ++ i) &#123;</span><br><span class="line">            adj[a[i]].<span class="built_in">push_back</span>(a[i + <span class="number">1</span>]);</span><br><span class="line">            degree[a[i + <span class="number">1</span>]] ++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!degree[i]) q.<span class="built_in">push</span>(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (q.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="type">int</span> u = q.<span class="built_in">front</span>(); q.<span class="built_in">pop</span>();</span><br><span class="line">        ++ cnt;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> v : adj[u]) &#123;</span><br><span class="line">            -- degree[v];</span><br><span class="line">            <span class="keyword">if</span> (!degree[v]) q.<span class="built_in">push</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cnt == n) cout &lt;&lt; <span class="string">&quot;YES\n&quot;</span>;</span><br><span class="line">    <span class="keyword">else</span> cout &lt;&lt; <span class="string">&quot;NO\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    <span class="type">int</span> t; cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">while</span> (t--) &#123; <span class="built_in">solve</span>(); &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="求解拓扑的深度">求解拓扑的深度</h2>
+<h3 id="例题车站分级">例题：<a
+href="https://www.luogu.com.cn/problem/P1983">车站分级</a></h3>
+<h4 id="收获">收获</h4>
+<ul>
+<li>这题首先是没有用邻接矩阵来判断重边，导致我用邻接表一直塞重边，然后就
+MLE 了</li>
+<li>然后就是我用了 dfs
+来求深度，然后没有判重，但是我觉得不能判重，因为之后的答案和当前状态有关，但是我又懒得写记忆化搜索。然而实际上用
+BFS 就能完美解决。</li>
+</ul>
+<h4 id="代码-2">代码</h4>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n, m; cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">adj</span>(n + <span class="number">1</span>);</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">deg</span><span class="params">(n + <span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="function">vector <span class="title">G</span><span class="params">(n + <span class="number">1</span>, vector&lt;<span class="type">bool</span>&gt;(n + <span class="number">1</span>))</span></span>;</span><br><span class="line">    <span class="keyword">while</span> (m --) &#123;</span><br><span class="line">        <span class="type">int</span> s; cin &gt;&gt; s;</span><br><span class="line">        <span class="type">int</span> minn = <span class="number">1e9</span>, maxn = <span class="number">0</span>;</span><br><span class="line">        set&lt;<span class="type">int</span>&gt; st;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">a</span><span class="params">(s)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; s; ++ i) &#123;</span><br><span class="line">            cin &gt;&gt; a[i];</span><br><span class="line">            minn = <span class="built_in">min</span>(minn, a[i]);</span><br><span class="line">            maxn = <span class="built_in">max</span>(maxn, a[i]);</span><br><span class="line">            st.<span class="built_in">insert</span>(a[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = minn; i &lt;= maxn; ++ i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!st.<span class="built_in">count</span>(i)) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> v : a) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (!G[i][v]) &#123;</span><br><span class="line">                        adj[i].<span class="built_in">push_back</span>(v);</span><br><span class="line">                        deg[v] ++;</span><br><span class="line">                        G[i][v] = <span class="literal">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    queue&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; q;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++ i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!deg[i]) &#123;</span><br><span class="line">            q.<span class="built_in">emplace</span>(i, <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (q.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">auto</span> [u, d] = q.<span class="built_in">front</span>(); q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> v : adj[u]) &#123;</span><br><span class="line">            deg[v] --;</span><br><span class="line">            <span class="keyword">if</span> (!deg[v]) &#123;</span><br><span class="line">                q.<span class="built_in">emplace</span>(v, d + <span class="number">1</span>);</span><br><span class="line">                ans = <span class="built_in">max</span>(ans, d + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法</category>
+        <category>图论</category>
+      </categories>
+      <tags>
+        <tag>拓扑排序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>排列中的循环问题</title>
+    <url>/2025/01/21/12/07/10/</url>
+    <content><![CDATA[<p>该类问题通常通过一个排列中的一个元素作为索引指向排列中的另外一个元素，这样通常能够构成一个循环</p>
+<p>例如一个排列 <span class="math inline">\(P  = [2, 3, 1, 5,
+4]\)</span></p>
+<p>有循环 <span class="math inline">\(2 \rightarrow 3 \rightarrow 1
+\rightarrow 2\)</span> 和 <span class="math inline">\(4 \rightarrow 5
+\rightarrow 4\)</span></p>
+<span id="more"></span>
+<h1 id="例题">例题</h1>
+<h2 id="sakurako-kosuke-and-the-permutation"><a
+href="https://codeforces.com/contest/2033/problem/E">Sakurako, Kosuke,
+and the Permutation</a></h2>
+<h3 id="思路">思路</h3>
+<p>通过题意可知，题目定义的简单的排列是一个排列中循环的长度不大于 2
+，因此只需要遍历每个元素找到循环，对于大于 2 的循环做一次统计，
+不难发现，只需要对长度大于 2 的排列执行 <span class="math inline">\((len
+- 1) / 2\)</span> 次操作即可将排列拆分为小于 2 的循环</p>
+<h3 id="代码">代码</h3>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n;</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">p</span><span class="params">(n)</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">        cin &gt;&gt; p[i];</span><br><span class="line">        -- p[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">vis</span><span class="params">(n)</span></span>;</span><br><span class="line">    i64 ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">        <span class="type">int</span> x = i;</span><br><span class="line">        <span class="keyword">if</span> (!vis[x]) &#123;</span><br><span class="line">            vis[x] = <span class="literal">true</span>;</span><br><span class="line">            <span class="type">int</span> len = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">while</span> (!vis[p[x]]) &#123;</span><br><span class="line">                vis[p[x]] = <span class="literal">true</span>;</span><br><span class="line">                x = p[x];</span><br><span class="line">                ++ len;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (len &gt; <span class="number">2</span>) &#123;</span><br><span class="line">                ans += (len - <span class="number">1</span>) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    <span class="type">int</span> t; cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">while</span> (t--) &#123; <span class="built_in">solve</span>(); &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>排列</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>最小生成树模板</title>
+    <url>/2025/01/21/12/18/51/</url>
+    <content><![CDATA[<p>最常用的两个最小生成树算法是 Prim 和
+Kruskal。前者编码较为复杂，用优先队列来维护；后者编码较容易，用并查集来维护。</p>
+<span id="more"></span>
+<h1 id="prim">Prim</h1>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n, m; cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    vector&lt;vector&lt;pair&lt;<span class="type">int</span>, i64&gt;&gt;&gt; <span class="built_in">adj</span>(n);</span><br><span class="line">    <span class="keyword">while</span> (m --) &#123;</span><br><span class="line">        <span class="type">int</span> u, v, w; cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;</span><br><span class="line">        -- u, -- v;</span><br><span class="line">        adj[u].<span class="built_in">emplace_back</span>(v, w);</span><br><span class="line">        adj[v].<span class="built_in">emplace_back</span>(u, w);</span><br><span class="line">    &#125;</span><br><span class="line">    priority_queue&lt;pair&lt;i64, <span class="type">int</span>&gt;, vector&lt;pair&lt;i64, <span class="type">int</span>&gt;&gt;, greater&lt;&gt;&gt; q;</span><br><span class="line">    q.<span class="built_in">emplace</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">done</span><span class="params">(n)</span></span>;</span><br><span class="line">    i64 ans = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (q.<span class="built_in">size</span>()) &#123;</span><br><span class="line">        <span class="keyword">auto</span> [d, x] = q.<span class="built_in">top</span>(); q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">if</span> (done[x]) <span class="keyword">continue</span>;</span><br><span class="line">        done[x] = <span class="literal">true</span>;</span><br><span class="line">        ans += d;</span><br><span class="line">        ++ cnt;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> [y, w] : adj[x]) &#123;</span><br><span class="line">            q.<span class="built_in">emplace</span>(w, y);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cnt == n) cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">else</span> cout &lt;&lt; <span class="string">&quot;orz\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="kruskal">Kruskal</h1>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">5010</span>, M = <span class="number">2e5</span> + <span class="number">10</span>;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">DSU</span> &#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; f, siz;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">DSU</span>() &#123;&#125;</span><br><span class="line">    <span class="built_in">DSU</span>(<span class="type">int</span> n) &#123;</span><br><span class="line">        <span class="built_in">init</span>(n);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        f.<span class="built_in">resize</span>(n);</span><br><span class="line">        std::<span class="built_in">iota</span>(f.<span class="built_in">begin</span>(), f.<span class="built_in">end</span>(), <span class="number">0</span>);</span><br><span class="line">        siz.<span class="built_in">assign</span>(n, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (x != f[x]) &#123;</span><br><span class="line">            x = f[x] = f[f[x]];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">same</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">find</span>(x) == <span class="built_in">find</span>(y);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> </span>&#123;</span><br><span class="line">        x = <span class="built_in">find</span>(x);</span><br><span class="line">        y = <span class="built_in">find</span>(y);</span><br><span class="line">        <span class="keyword">if</span> (x == y) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        siz[x] += siz[y];</span><br><span class="line">        f[y] = x;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">size</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> siz[<span class="built_in">find</span>(x)];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Edge</span>&#123;</span><br><span class="line">    <span class="type">int</span> u, v, w;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n, m; cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">auto</span> dsu = <span class="built_in">DSU</span>(n + <span class="number">1</span>);</span><br><span class="line">    <span class="function">vector&lt;Edge&gt; <span class="title">edge</span><span class="params">(m)</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;m;++i) &#123;</span><br><span class="line">        cin &gt;&gt; edge[i].u &gt;&gt; edge[i].v &gt;&gt; edge[i].w;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(edge.<span class="built_in">begin</span>(), edge.<span class="built_in">end</span>(), [](Edge &amp;a, Edge &amp;b) &#123; <span class="keyword">return</span> a.w &lt; b.w; &#125;);</span><br><span class="line">    <span class="type">int</span> ans = <span class="number">0</span>, cnt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;m;++i) &#123;</span><br><span class="line">        <span class="keyword">auto</span> [u, v, w] = edge[i];</span><br><span class="line">        <span class="keyword">if</span> (dsu.<span class="built_in">same</span>(u, v)) <span class="keyword">continue</span>;</span><br><span class="line">        ans += w;</span><br><span class="line">        dsu.<span class="built_in">merge</span>(u, v);</span><br><span class="line">        ++ cnt;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (cnt == n - <span class="number">1</span>) cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">else</span> cout &lt;&lt; <span class="string">&quot;orz\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>最小生成树</tag>
+        <tag>模板</tag>
+        <tag>图论</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>最短Hamilton距离</title>
+    <url>/2025/01/23/00/35/23/</url>
+    <content><![CDATA[<p>这题可以说是状态压缩的其中一类的板题了</p>
+<span id="more"></span>
+<h1 id="最短hamilton路径"><a
+href="https://www.acwing.com/problem/content/description/93/">最短Hamilton路径</a></h1>
+<h2 id="代码">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">21</span>;</span><br><span class="line"><span class="type">int</span> dis[N][N];</span><br><span class="line"><span class="type">int</span> dp[<span class="number">1</span>&lt;&lt;N][N];</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">memset</span>(dp, <span class="number">0x3f</span>, <span class="built_in">sizeof</span>(dp));</span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">            cin &gt;&gt; dis[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    dp[<span class="number">1</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> s=<span class="number">1</span>;s&lt;(<span class="number">1</span>&lt;&lt;n);++s) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((s &gt;&gt; j) &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> k=<span class="number">0</span>;k&lt;n;++k) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ((s ^ (<span class="number">1</span> &lt;&lt; j)) &gt;&gt; k &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                        dp[s][j] = <span class="built_in">min</span>(dp[s][j], dp[s^(<span class="number">1</span> &lt;&lt; j)][k] + dis[k][j]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>][n - <span class="number">1</span>] &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>题解</category>
+      </categories>
+      <tags>
+        <tag>状压dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法竞赛中左闭右开区间的好处</title>
+    <url>/2025/01/24/13/02/51/</url>
+    <content><![CDATA[<p>左闭右开区间（[l, r)）在算法竞赛中常用，主要因为其计算长度直观（r -
+l）、分割区间无重叠、与 STL 接口兼容、空区间表示自然（l ==
+r），并且在循环和算法实现中逻辑更简洁。这些特点使得它成为处理区间问题的首选。</p>
+<span id="more"></span>
+<h1 id="左闭右开区间的好处">左闭右开区间的好处</h1>
+<h2 id="区间长度计算更直观">1. 区间长度计算更直观</h2>
+<p>左闭右开区间的长度可以简单地通过公式 <code>r - l</code>
+计算，而不需要再加 1。例如：<br />
+- 对于区间 [2, 5)，长度是 <code>5 - 2 = 3</code>，对应 2, 3, 4。<br />
+- 如果使用左闭右闭区间 [2, 4]，计算长度则需要用公式
+<code>r - l + 1</code>。</p>
+<hr />
+<h2 id="便于分割区间">2. 便于分割区间</h2>
+<p>左闭右开区间在分割时不会产生重叠，容易维护。例如：<br />
+- 区间 [l, m) 和 [m, r) 是严格不重叠的，起点 <code>m</code>
+不会同时属于两个区间。<br />
+- 若使用左闭右闭区间 [l, m] 和 [m + 1,
+r]，则需要对区间端点进行额外处理。</p>
+<hr />
+<h2 id="与常用-stl-接口兼容">3. 与常用 STL 接口兼容</h2>
+<p>在 C++ STL
+中，大多数容器和算法的操作也是基于左闭右开区间设计的，例如：<br />
+- <code>std::vector</code> 的 <code>begin()</code> 和
+<code>end()</code>，<code>end()</code>
+指向的是超出最后一个元素的下一个位置。<br />
+- <code>std::lower_bound</code> 和 <code>std::upper_bound</code>
+通常会返回左闭右开的范围。</p>
+<p>这种统一的约定让代码更易于理解和维护。</p>
+<hr />
+<h2 id="边界处理更方便">4. 边界处理更方便</h2>
+<p>当一个区间为空时，左闭右开区间自然满足
+<code>l == r</code>，表示区间无效。而对于左闭右闭区间，可能需要特殊处理空区间的逻辑。<br />
+例如：<br />
+- [2, 2) 是一个空区间，不需要额外的条件判断。<br />
+- 如果使用左闭右闭区间 [2, 1] 来表示空区间，就显得不直观。</p>
+<hr />
+<h2 id="适配数学和逻辑简洁性">5. 适配数学和逻辑简洁性</h2>
+<p>在某些情况下，左闭右开区间更符合数学上的定义。例如：<br />
+- 对于循环、二分查找等算法，条件如 <code>while (l &lt; r)</code> 或
+<code>for (int i = l; i &lt; r; ++i)</code>
+更加简洁，不需要额外处理边界。</p>
+<hr />
+<h2 id="总结">总结</h2>
+<p><strong>左闭右开区间的主要优点是计算简洁、逻辑清晰、便于维护和分割，且能更好地与
+STL 接口兼容。</strong><br />
+这些特性使得左闭右开成为算法竞赛和工程开发中的首选方式。</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>素数筛</title>
+    <url>/2025/01/21/13/55/32/</url>
+    <content><![CDATA[<p>常见的素数筛有两种，分别是埃氏筛和欧拉筛，在数据规模较大的场景中，欧拉筛的效率高于埃氏筛，但欧拉筛的编码相对较复杂，不过也挺简单。</p>
+<span id="more"></span>
+<h1 id="素数筛">素数筛</h1>
+<h2 id="欧拉筛线性筛">欧拉筛（线性筛）</h2>
+<p>这是最快的素数筛法（应该吧），时间复杂度能干到O(n)，其实基本步骤很好理解，这玩意唯一的难度就我而言应该是防止越界的判断，其他的我觉得到是非常好理解。</p>
+<h3 id="步骤整理">步骤整理</h3>
+<ol type="1">
+<li>一个容器，用来存放筛选的质数</li>
+<li>一个bool数组，用来判断一个数字是否被筛掉</li>
+<li>函数内一层for循环包着，区间为 [2,n]
+<ol type="1">
+<li>循环内最先检查当前数字的状态（是否被筛掉），没有的话就是质数，把他压入容器</li>
+<li>接下来跟着一个循环 （范围for），遍历质数的容器
+<ol type="1">
+<li>首先为了防止越界，先检查边界，如果大于 n ，就直接跳出循环</li>
+<li>然后执行一次筛除操作，将容器的当前数和 索引 i
+相乘得到的倍数筛掉（改bool）</li>
+<li>如果当前的 i 是已经被筛掉的，此时跳出循环</li>
+</ol></li>
+</ol></li>
+</ol>
+<h3 id="模板">模板</h3>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1e8</span><span class="number">+10</span>;</span><br><span class="line"><span class="type">bool</span> not_prime[N];</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; prime;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sieve</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">2</span>;i&lt;=n;++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!not_prime[i]) &#123;</span><br><span class="line">            prime.<span class="built_in">push_back</span>(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j: prime) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i*j&gt;n) <span class="keyword">break</span>;</span><br><span class="line">            not_prime[i*j] = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">if</span> (i%j==<span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="埃氏筛">埃氏筛</h2>
+<h3 id="模板-1">模板</h3>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">sieve</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">2</span>;i&lt;=n;++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!not_prime[i]) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">2</span>;j&lt;=n;++j) &#123;</span><br><span class="line">                <span class="keyword">if</span> (i*j&gt;n) <span class="keyword">break</span>;</span><br><span class="line">                not_prime[i*j] = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>模板</tag>
+        <tag>数论</tag>
+        <tag>素数筛</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>线段树模板及常见题型</title>
+    <url>/2025/01/24/11/50/35/</url>
+    <content><![CDATA[<p>这里包含了线段树的模板以及常见题型</p>
+<span id="more"></span>
+<h1 id="模板">模板</h1>
+<h2 id="懒标记线段树">懒标记线段树</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">LazySegmentTree</span> &#123;</span><br><span class="line">    <span class="type">int</span> n;</span><br><span class="line">    vector&lt;Info&gt; info;</span><br><span class="line">    vector&lt;Tag&gt; tag;</span><br><span class="line">    <span class="built_in">LazySegmentTree</span>() : <span class="built_in">n</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line">    <span class="built_in">LazySegmentTree</span>(<span class="type">int</span> n_, Info v_ = <span class="built_in">Info</span>()) &#123;</span><br><span class="line">        <span class="built_in">init</span>(n_, v_);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">(<span class="type">int</span> n_, Info v_ = Info())</span> </span>&#123;</span><br><span class="line">        <span class="built_in">init</span>(<span class="built_in">vector</span>(n_, v_));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</span></span><br><span class="line"><span class="function">    <span class="title">LazySegmentTree</span><span class="params">(vector&lt;T&gt; init_)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">init</span>(init_);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</span></span><br><span class="line"><span class="function">    <span class="type">void</span> <span class="title">init</span><span class="params">(vector&lt;T&gt; init_)</span> </span>&#123;</span><br><span class="line">        n = init_.<span class="built_in">size</span>();</span><br><span class="line">        info.<span class="built_in">assign</span>(<span class="number">4</span> &lt;&lt; __lg(n), <span class="built_in">Info</span>());</span><br><span class="line">        tag.<span class="built_in">assign</span>(<span class="number">4</span> &lt;&lt; __lg(n), <span class="built_in">Tag</span>());</span><br><span class="line">        function&lt;<span class="type">void</span>(<span class="type">int</span>, <span class="type">int</span>, <span class="type">int</span>)&gt; build = [&amp;](<span class="type">int</span> p, <span class="type">int</span> l, <span class="type">int</span> r) &#123;</span><br><span class="line">            <span class="keyword">if</span> (r - l == <span class="number">1</span>) &#123;</span><br><span class="line">                info[p] = init_[l];</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">int</span> m = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">            <span class="built_in">build</span>(p &lt;&lt; <span class="number">1</span>, l, m);</span><br><span class="line">            <span class="built_in">build</span>(p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>, m, r);</span><br><span class="line">            <span class="built_in">pull</span>(p);</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="built_in">build</span>(<span class="number">1</span>, <span class="number">0</span>, n);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">pull</span><span class="params">(<span class="type">int</span> p)</span> </span>&#123;</span><br><span class="line">        info[p] = info[p &lt;&lt; <span class="number">1</span>] + info[p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">apply</span><span class="params">(<span class="type">int</span> p, <span class="type">const</span> Tag &amp; v)</span> </span>&#123;</span><br><span class="line">        info[p].<span class="built_in">apply</span>(v);</span><br><span class="line">        tag[p].<span class="built_in">apply</span>(v);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">push</span><span class="params">(<span class="type">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">apply</span>(p &lt;&lt; <span class="number">1</span>, tag[p]);</span><br><span class="line">        <span class="built_in">apply</span>(p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>, tag[p]);</span><br><span class="line">        tag[p] = <span class="built_in">Tag</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">Info <span class="title">rangeQuery</span><span class="params">(<span class="type">int</span> p, <span class="type">int</span> l, <span class="type">int</span> r, <span class="type">int</span> x, <span class="type">int</span> y)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l &gt;= y || r &lt;= x) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">Info</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (l &gt;= x &amp;&amp; r &lt;= y) &#123;</span><br><span class="line">            <span class="keyword">return</span> info[p];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> m  = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">push</span>(p);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">rangeQuery</span>(p &lt;&lt; <span class="number">1</span>, l, m, x, y) + <span class="built_in">rangeQuery</span>(p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>, m, r, x, y);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">Info <span class="title">rangeQuery</span><span class="params">(<span class="type">int</span> l, <span class="type">int</span> r)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">rangeQuery</span>(<span class="number">1</span>, <span class="number">0</span>, n, l, r);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">rangeApply</span><span class="params">(<span class="type">int</span> p, <span class="type">int</span> l, <span class="type">int</span> r, <span class="type">int</span> x, <span class="type">int</span> y, <span class="type">const</span> Tag &amp; v)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (l &gt;= y || r &lt;= x) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (x &lt;= l &amp;&amp; r &lt;= y) &#123;</span><br><span class="line">            <span class="built_in">apply</span>(p, v);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> m = (l + r) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">push</span>(p);</span><br><span class="line">        <span class="built_in">rangeApply</span>(p &lt;&lt; <span class="number">1</span>, l, m, x, y, v);</span><br><span class="line">        <span class="built_in">rangeApply</span>(p &lt;&lt; <span class="number">1</span> | <span class="number">1</span>, m, r, x, y, v);</span><br><span class="line">        <span class="built_in">pull</span>(p);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">rangeApply</span><span class="params">(<span class="type">int</span> l, <span class="type">int</span> r, <span class="type">const</span> Tag &amp; v)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">rangeApply</span>(<span class="number">1</span>, <span class="number">0</span>, n, l, r, v);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 以下根据不同需求来写</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Tag</span> &#123;</span><br><span class="line">    <span class="type">int</span> add = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">apply</span><span class="params">(<span class="type">const</span> Tag &amp; t)</span> &amp; </span>&#123;</span><br><span class="line">        add += t.add;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Info</span> &#123;</span><br><span class="line">    i64 sum = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> len = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">Info</span> () &#123;&#125;</span><br><span class="line">    <span class="built_in">Info</span> (i64 sum_, <span class="type">int</span> len_ = <span class="number">1</span>) : <span class="built_in">sum</span>(sum_), <span class="built_in">len</span>(len_) &#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">apply</span><span class="params">(<span class="type">const</span> Tag &amp; t)</span> &amp; </span>&#123;</span><br><span class="line">        sum += t.add * len;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Info <span class="keyword">operator</span> + (<span class="type">const</span> Info &amp; a, <span class="type">const</span> Info &amp; b) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;a.sum + b.sum, a.len + b.len&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="常见题型">常见题型</h1>
+<h2 id="区间加-区间求和">区间加 + 区间求和</h2>
+<p>例题：<span class="exturl" data-url="aHR0cHM6Ly93d3cubHVvZ3UuY29tLmNuL3Byb2JsZW0vUDMzNzI=">洛谷 P3372
+【模板】线段树 1<i class="fa fa-external-link-alt"></i></span></p>
+<h2 id="区间加-区间修改-区间最大值">区间加 + 区间修改 + 区间最大值</h2>
+<p>例题：<span class="exturl" data-url="aHR0cHM6Ly93d3cubHVvZ3UuY29tLmNuL3Byb2JsZW0vUDEyNTM=">洛谷 P1253
+扶苏的问题<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <categories>
+        <category>算法</category>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>线段树</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>逆序对</title>
+    <url>/2025/01/21/10/17/08/</url>
+    <content><![CDATA[<p>用树状数组很神奇的做出来了，原理暂时不清楚，反正就是很神奇</p>
+<span id="more"></span>
+<h1 id="代码">代码</h1>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> lowbit(x) (x &amp; (-x))</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">5e5</span> + <span class="number">10</span>;</span><br><span class="line">i64 tree[N];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">update</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> d)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (x &lt; N) &#123;</span><br><span class="line">        tree[x] += d;</span><br><span class="line">        x += <span class="built_in">lowbit</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">i64 <span class="title">sum</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    i64 res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (x &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        res += tree[x];</span><br><span class="line">        x -= <span class="built_in">lowbit</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n;</span><br><span class="line">    vector&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; <span class="built_in">a</span>(n<span class="number">+1</span>);</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">b</span><span class="params">(n + <span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;++i) &#123;</span><br><span class="line">        cin &gt;&gt; a[i].first;</span><br><span class="line">        a[i].second = i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(a.<span class="built_in">begin</span>(), a.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;++i) &#123;</span><br><span class="line">        b[a[i].second] = i;</span><br><span class="line">        <span class="keyword">if</span> (a[i].first == a[i<span class="number">-1</span>].first) &#123;</span><br><span class="line">            b[a[i].second] = b[a[i<span class="number">-1</span>].second];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    i64 ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=n;i&gt;=<span class="number">1</span>;--i) &#123;</span><br><span class="line">        <span class="built_in">update</span>(b[i], <span class="number">1</span>);</span><br><span class="line">        ans += <span class="built_in">sum</span>(b[i] - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>树状数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Flutter + C++ FFI 示例教程 (Android 平台)</title>
+    <url>/2025/04/07/15/34/00/</url>
+    <content><![CDATA[<p>下面我将提供一个完整的从零开始的流程，使用 <code>add</code>
+函数作为示例，并包含 <code>ffigen</code> 工具的使用。</p>
+<span id="more"></span>
+<h2 id="创建-flutter-项目">1. 创建 Flutter 项目</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">flutter create flutter_cpp_demo</span><br><span class="line"><span class="built_in">cd</span> flutter_cpp_android_demo</span><br></pre></td></tr></table></figure>
+<h2 id="添加必要的依赖">2. 添加必要的依赖</h2>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">flutter pub add ffigen</span><br></pre></td></tr></table></figure>
+<h2 id="创建-c-文件">3. 创建 C++ 文件</h2>
+<p>在项目根目录下创建 <code>native/src/add.cpp</code>:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line">    <span class="function"><span class="type">int32_t</span> <span class="title">add</span><span class="params">(<span class="type">int32_t</span> a, <span class="type">int32_t</span> b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="创建头文件-用于-ffigen">4. 创建头文件 (用于 ffigen)</h2>
+<p>创建 <code>native/include/add.h</code>:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> ADD_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ADD_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int32_t</span> <span class="title function_">add</span><span class="params">(<span class="type">int32_t</span> a, <span class="type">int32_t</span> b)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="配置-ffigen">5. 配置 ffigen</h2>
+<p>在项目根目录创建 <code>ffigen.yaml</code>:</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">&#x27;NativeAddBindings&#x27;</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&#x27;Bindings to native add function&#x27;</span></span><br><span class="line"><span class="attr">output:</span> <span class="string">&#x27;lib/generated_bindings.dart&#x27;</span></span><br><span class="line"><span class="attr">headers:</span></span><br><span class="line">  <span class="attr">entry-points:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&#x27;native/include/add.h&#x27;</span></span><br><span class="line">  <span class="attr">include-directives:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">&#x27;native/include/add.h&#x27;</span></span><br><span class="line"><span class="attr">preamble:</span> <span class="string">|</span></span><br><span class="line"><span class="string">  // ignore_for_file: always_specify_types</span></span><br><span class="line"><span class="string">  // ignore_for_file: camel_case_types</span></span><br><span class="line"><span class="string">  // ignore_for_file: non_constant_identifier_names</span></span><br></pre></td></tr></table></figure>
+<p>运行生成绑定代码: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">flutter pub run ffigen</span><br></pre></td></tr></table></figure></p>
+<p>这将在 <code>lib/generated_bindings.dart</code> 生成绑定代码。</p>
+<h2 id="配置-android-的-cmake">6. 配置 Android 的 CMake</h2>
+<p>在 <code>android/app/src/main/cpp/CMakeLists.txt</code>
+(如不存在则创建):</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.4</span>.<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加你的源文件</span></span><br><span class="line"><span class="keyword">add_library</span>(native_add SHARED</span><br><span class="line">    ../../../../../native/src/add.cpp</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 包含头文件目录</span></span><br><span class="line"><span class="keyword">target_include_directories</span>(native_add PRIVATE</span><br><span class="line">    ../../../../../native/<span class="keyword">include</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">find_library</span>(log-lib log)</span><br><span class="line"></span><br><span class="line"><span class="keyword">target_link_libraries</span>(native_add</span><br><span class="line">    <span class="variable">$&#123;log-lib&#125;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="修改-android-的-build.gradle.kts">7. 修改 Android 的
+build.gradle.kts</h2>
+<p>修改 <code>android/app/build.gradle.kts</code>:</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        externalNativeBuild &#123;</span><br><span class="line">            cmake &#123;</span><br><span class="line">                cppFlags.add(<span class="string">&quot;-std=c++17&quot;</span>)</span><br><span class="line">                arguments.add(<span class="string">&quot;-DANDROID_STL=c++_shared&quot;</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    externalNativeBuild &#123;</span><br><span class="line">        cmake &#123;</span><br><span class="line">            path = <span class="keyword">file</span>(<span class="string">&quot;src/main/cpp/CMakeLists.txt&quot;</span>)</span><br><span class="line">            version = <span class="string">&quot;3.22.1&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="创建-dart-封装">8. 创建 Dart 封装</h2>
+<p>创建 <code>lib/native_add.dart</code>:</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;dart:ffi&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;dart:io&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;generated_bindings.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NativeAdd</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> DynamicLibrary _<span class="keyword">library</span> = () &#123;</span><br><span class="line">    <span class="keyword">if</span> (Platform.isAndroid) &#123;</span><br><span class="line">      <span class="keyword">return</span> DynamicLibrary.open(<span class="string">&#x27;libnative_add.so&#x27;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (Platform.isIOS) &#123;</span><br><span class="line">      <span class="keyword">return</span> DynamicLibrary.process();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> UnsupportedError(<span class="string">&#x27;Platform not supported&#x27;</span>);</span><br><span class="line">  &#125;();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> NativeAddBindings _bindings = NativeAddBindings(_<span class="keyword">library</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">int</span> add(<span class="built_in">int</span> a, <span class="built_in">int</span> b) =&gt; _bindings.add(a, b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用示例">9. 使用示例</h2>
+<p>修改 <code>lib/main.dart</code>:</p>
+<figure class="highlight dart"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/material.dart&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;native_add.dart&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(<span class="keyword">const</span> MyApp());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> MyApp(&#123;<span class="keyword">super</span>.key&#125;);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> MaterialApp(</span><br><span class="line">      home: Scaffold(</span><br><span class="line">        appBar: AppBar(title: <span class="keyword">const</span> Text(<span class="string">&#x27;Flutter + C++ Example&#x27;</span>)),</span><br><span class="line">        body: Center(</span><br><span class="line">          child: Text(</span><br><span class="line">            <span class="string">&#x27;3 + 5 = <span class="subst">$&#123;NativeAdd.add(<span class="number">3</span>, <span class="number">5</span>)&#125;</span>&#x27;</span>,</span><br><span class="line">            style: <span class="keyword">const</span> TextStyle(fontSize: <span class="number">24</span>),</span><br><span class="line">          ),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="构建和运行">10. 构建和运行</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">flutter run</span><br></pre></td></tr></table></figure>
+<h2 id="完整项目结构">完整项目结构</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flutter_cpp_example/</span><br><span class="line">├── android/</span><br><span class="line">│   └── app/</span><br><span class="line">│       └── src/</span><br><span class="line">│           └── main/</span><br><span class="line">│               ├── cpp/</span><br><span class="line">│               │   └── CMakeLists.txt</span><br><span class="line">│               └── java/</span><br><span class="line">├── lib/</span><br><span class="line">│   ├── generated_bindings.dart</span><br><span class="line">│   ├── native_add.dart</span><br><span class="line">│   └── main.dart</span><br><span class="line">├── native/</span><br><span class="line">│   ├── include/</span><br><span class="line">│   │   └── add.h</span><br><span class="line">│   └── src/</span><br><span class="line">│       └── add.cpp</span><br><span class="line">├── pubspec.yaml</span><br><span class="line">└── ffigen.yaml</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Flutter</category>
+      </categories>
+      <tags>
+        <tag>Flutter</tag>
+        <tag>C++</tag>
+        <tag>FFI</tag>
+        <tag>Android</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ABC386-F-Operate-K</title>
+    <url>/2025/01/21/13/51/54/</url>
+    <content><![CDATA[<p>这题在编辑距离的基础上限制了操作步骤，这题的字符串长度在 5e5,
+用常规的编辑距离的方法，时空复杂度均为O(mn)，必超时加MLE，所以需要一定的优化。分析可知，dp矩阵只有中间一部分有贡献，其他的部分（i
+- j &gt; k）中，必然无法在 k 次处理中完成，故可以舍去，因此我们只需要用
+<code>dp[n + 1][2K + 1]</code> 的数组就可以完成任务，然后通过自定义的
+get_dp 与 set_dp 方法即可联系常规 dp 到 变化后 dp 的关系</p>
+<span id="more"></span>
+<h1 id="f---operate-k"><a
+href="https://atcoder.jp/contests/abc386/tasks/abc386_f">F - Operate
+K</a></h1>
+<h2 id="代码">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> inf = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> k; cin &gt;&gt; k;</span><br><span class="line">    string s, t; cin &gt;&gt; s &gt;&gt; t;</span><br><span class="line">    <span class="type">int</span> n = s.<span class="built_in">size</span>(), m = t.<span class="built_in">size</span>();</span><br><span class="line">    <span class="function">vector <span class="title">dp</span><span class="params">(n + <span class="number">1</span>, vector&lt;<span class="type">int</span>&gt;(<span class="number">2</span> * k + <span class="number">1</span>, inf))</span></span>;</span><br><span class="line">    <span class="keyword">auto</span> get_dp = [&amp;](<span class="type">int</span> i, <span class="type">int</span> j) -&gt; <span class="type">int</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">abs</span>(i - j) &gt; k) <span class="keyword">return</span> inf;</span><br><span class="line">        <span class="keyword">return</span> dp[i][j - i + k];</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">auto</span> set_dp = [&amp;](<span class="type">int</span> i, <span class="type">int</span> j, <span class="type">int</span> x) -&gt; <span class="type">void</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">abs</span>(i - j) &gt; k) <span class="keyword">return</span>;</span><br><span class="line">        dp[i][j - i + k] = x;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">set_dp</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= <span class="built_in">min</span>(m, k); ++ i)&#123;</span><br><span class="line">        <span class="built_in">set_dp</span>(<span class="number">0</span>, i, i);</span><br><span class="line">    &#125;<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= <span class="built_in">min</span>(n, k); ++ i)&#123;</span><br><span class="line">        <span class="built_in">set_dp</span>(<span class="number">0</span>, i, i);</span><br><span class="line">        <span class="built_in">set_dp</span>(i, <span class="number">0</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++ i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> d = <span class="number">0</span>; d &lt;= <span class="number">2</span> * k; ++ d) &#123;</span><br><span class="line">            <span class="type">int</span> j = i - k + d;</span><br><span class="line">            <span class="keyword">if</span> (j &lt;= <span class="number">0</span> || j &gt; m) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (s[i - <span class="number">1</span>] == t[j - <span class="number">1</span>]) &#123;</span><br><span class="line">                <span class="built_in">set_dp</span>(i, j, <span class="built_in">get_dp</span>(i - <span class="number">1</span>, j - <span class="number">1</span>));</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">set_dp</span>(i, j, <span class="built_in">min</span>(&#123;<span class="built_in">get_dp</span>(i - <span class="number">1</span>, j - <span class="number">1</span>), <span class="built_in">get_dp</span>(i - <span class="number">1</span>, j), <span class="built_in">get_dp</span>(i, j - <span class="number">1</span>)&#125;) + <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; (<span class="built_in">get_dp</span>(n, m) &lt;= k ? <span class="string">&quot;Yes\n&quot;</span> : <span class="string">&quot;No\n&quot;</span>) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>题解</category>
+      </categories>
+      <tags>
+        <tag>dp</tag>
+        <tag>编辑距离</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Codeforces Round 995 (Div. 3) E. Best Price 题解</title>
+    <url>/2025/01/28/23/38/35/</url>
+    <content><![CDATA[<p>这道题第一次做完全没有思路，看完题解过了一段时间后还是不会做，再看完题解思路后自己做还是有点茫然，不过最后还算是写出来了，收获也挺大的。</p>
+<span id="more"></span>
+<h1 id="题目">题目</h1>
+<p><span class="exturl" data-url="aHR0cHM6Ly9jb2RlZm9yY2VzLmNvbS9jb250ZXN0LzIwNTEvcHJvYmxlbS9F">Codeforces
+Round 995 (Div. 3) E. Best Price<i class="fa fa-external-link-alt"></i></span></p>
+<h1 id="题解">题解</h1>
+<p>注意到，在所有可选的价格中，只有 a 和 b
+的价格是可选的，因为在相同购买人数和差评数下，a 和 b
+的价格是最大的，因此我们只需要枚举 a 和 b 中的数。</p>
+<p>那么我们可以用一个新的数组来存 a 和 b
+的数，同时去重简单优化一下。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">auto</span> c = a;</span><br><span class="line">c.<span class="built_in">insert</span>(c.<span class="built_in">end</span>(), b.<span class="built_in">begin</span>(), b.<span class="built_in">end</span>()); <span class="comment">// 合并</span></span><br><span class="line"><span class="built_in">sort</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>());</span><br><span class="line">c.<span class="built_in">erase</span>(<span class="built_in">unique</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>()), c.<span class="built_in">end</span>()); <span class="comment">// 去重需要排序</span></span><br></pre></td></tr></table></figure>
+<p>接着可以枚举每一个 c
+中的数，即枚举单价，然后二分有多少人买了，有多少人给了差评。如果给了差评的人数小于
+k ，那么就更新 ans 为最大值。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sort</span>(a.<span class="built_in">begin</span>(), a.<span class="built_in">end</span>());</span><br><span class="line"><span class="built_in">sort</span>(b.<span class="built_in">begin</span>(), b.<span class="built_in">end</span>());</span><br><span class="line">i64 ans = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; c.<span class="built_in">size</span>(); ++ i) &#123;</span><br><span class="line">    <span class="type">int</span> cnt = b.<span class="built_in">end</span>() - <span class="built_in">lower_bound</span>(b.<span class="built_in">begin</span>(), b.<span class="built_in">end</span>(), c[i]); <span class="comment">// 统计有多少人买了</span></span><br><span class="line">    <span class="type">int</span> k_ = cnt - (<span class="type">int</span>)(a.<span class="built_in">end</span>() - <span class="built_in">lower_bound</span>(a.<span class="built_in">begin</span>(), a.<span class="built_in">end</span>(), c[i])); <span class="comment">// 买的人数 - 好评人数 = 差评人数</span></span><br><span class="line">    <span class="keyword">if</span> (k_ &lt;= k) ans = <span class="built_in">max</span>(ans, <span class="number">1LL</span> * cnt * c[i]); <span class="comment">// 更新答案</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="完整代码">完整代码</h1>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n, k; cin &gt;&gt; n &gt;&gt; k;</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">a</span><span class="params">(n)</span>, <span class="title">b</span><span class="params">(n)</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">        cin &gt;&gt; a[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">        cin &gt;&gt; b[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">auto</span> c = a;</span><br><span class="line">    c.<span class="built_in">insert</span>(c.<span class="built_in">end</span>(), b.<span class="built_in">begin</span>(), b.<span class="built_in">end</span>());</span><br><span class="line">    <span class="built_in">sort</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>());</span><br><span class="line">    c.<span class="built_in">erase</span>(<span class="built_in">unique</span>(c.<span class="built_in">begin</span>(), c.<span class="built_in">end</span>()), c.<span class="built_in">end</span>());</span><br><span class="line">    <span class="built_in">sort</span>(a.<span class="built_in">begin</span>(), a.<span class="built_in">end</span>());</span><br><span class="line">    <span class="built_in">sort</span>(b.<span class="built_in">begin</span>(), b.<span class="built_in">end</span>());</span><br><span class="line">    i64 ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; c.<span class="built_in">size</span>(); ++ i) &#123;</span><br><span class="line">        <span class="type">int</span> cnt = b.<span class="built_in">end</span>() - <span class="built_in">lower_bound</span>(b.<span class="built_in">begin</span>(), b.<span class="built_in">end</span>(), c[i]);</span><br><span class="line">        <span class="type">int</span> k_ = cnt - (<span class="type">int</span>)(a.<span class="built_in">end</span>() - <span class="built_in">lower_bound</span>(a.<span class="built_in">begin</span>(), a.<span class="built_in">end</span>(), c[i]));</span><br><span class="line">        <span class="keyword">if</span> (k_ &lt;= k) ans = <span class="built_in">max</span>(ans, <span class="number">1LL</span> * cnt * c[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    <span class="type">int</span> t; cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">while</span> (t--) &#123; <span class="built_in">solve</span>(); &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>题解</category>
+      </categories>
+      <tags>
+        <tag>二分</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>P2949 [USACO09OPEN] Work Scheduling G 题解</title>
+    <url>/2025/01/29/18/46/29/</url>
+    <content><![CDATA[<p>贪心好题，这题我自己想的贪心策略是对的，但是容易超时，靠着
+<code>unordered_map</code>
+才勉强过了，虽然过了，但是很不优雅。之后去看了题解，发现了一个非常优雅的思路，但是我居然码不出来，很是气愤，特此记录。</p>
+<span id="more"></span>
+<h1 id="题目">题目</h1>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cubHVvZ3UuY29tLmNuL3Byb2JsZW0vUDI5NDk=">P2949 [USACO09OPEN]
+Work Scheduling G<i class="fa fa-external-link-alt"></i></span></p>
+<h1 id="我的想法">我的想法</h1>
+<h2 id="思路">思路</h2>
+<p>我的想法先对获利排序，从大到小来枚举，比如我现在枚举到时限是 4 获利是
+10，我就在 4 的位置打上标记，下一次如果我还是枚举到时限是 4
+的工作，我就往前找空的位置。比如找 3 ，如果 3
+已经在之前放了，那么就继续向前找。</p>
+<p>这个思路是可行的，但是问题在于如果重复出现一个时限很多次，那么就会一直不停往前找，肯定会超时。所以我这里用了类似并查集中的路径压缩的方式来处理，这样可以大幅度缩短找空点的时间。</p>
+<p>但是这种方式终归是取巧，无法处理所有的数据，如果数据强一点还是没用。</p>
+<h2 id="代码">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n;</span><br><span class="line">    vector&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; <span class="built_in">a</span>(n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">        cin &gt;&gt; a[i].second &gt;&gt; a[i].first;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(a.<span class="built_in">begin</span>(), a.<span class="built_in">end</span>(), <span class="built_in">greater</span>());</span><br><span class="line">    unordered_map&lt;<span class="type">int</span>, <span class="type">int</span>&gt; mp;</span><br><span class="line">    set&lt;<span class="type">int</span>&gt; st;</span><br><span class="line">    i64 ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">        <span class="keyword">auto</span>[p, d] = a[i];</span><br><span class="line">        <span class="type">int</span> d_ = d;</span><br><span class="line">        <span class="comment">// cerr &lt;&lt; d_ &lt;&lt; &quot; &quot; &lt;&lt; mp[d_] &lt;&lt; &quot; mp\n&quot;;</span></span><br><span class="line">        <span class="keyword">while</span> (mp.<span class="built_in">count</span>(d_)) &#123;</span><br><span class="line">            <span class="comment">// cerr &lt;&lt; d_ &lt;&lt; &quot; mp\n&quot;;</span></span><br><span class="line">            d_ = mp[d_];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (d_ &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">            mp[d] = mp[d_] = d_ - <span class="number">1</span>;</span><br><span class="line">            <span class="comment">// cerr &lt;&lt; &quot;mp &quot; &lt;&lt; d &lt;&lt; &quot; &quot; &lt;&lt; d_ &lt;&lt; &quot; &quot; &lt;&lt; mp[d] &lt;&lt; &quot;\n&quot;;</span></span><br><span class="line">            ans += p;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="题解的做法">题解的做法</h1>
+<h2 id="思路-1">思路</h2>
+<p>可以对时限来排序，想象时间倒流，把时限作为工作开始的点。这样有什么好处？简单来说就是可以直接用优先队列来维护当前时间下能选的最大利润。</p>
+<p>首先设置 now 为最大的那个时限，然后把所有等于 now
+的工作的利润加入优先队列中，每循环一次 <code>now --</code>, 同时 ans
+加上优先队列中最大的元素。如果当前队列为空，那么就直接跳到下一个有工作的时间。</p>
+<h2 id="代码-1">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n;</span><br><span class="line">    vector&lt;pair&lt;<span class="type">int</span>,<span class="type">int</span>&gt;&gt; <span class="built_in">a</span>(n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; ++ i) &#123;</span><br><span class="line">        cin &gt;&gt; a[i].first &gt;&gt; a[i].second;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">sort</span>(a.<span class="built_in">begin</span>(), a.<span class="built_in">end</span>(), <span class="built_in">greater</span>());</span><br><span class="line">    priority_queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line">    i64 ans = <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> now = a[<span class="number">0</span>].first;</span><br><span class="line">    <span class="type">int</span> p = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (now &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (p &lt; n &amp;&amp; a[p].first == now) &#123;</span><br><span class="line">            q.<span class="built_in">push</span>(a[p].second);</span><br><span class="line">            ++ p;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">            now = a[p].first;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ans += q.<span class="built_in">top</span>(); q.<span class="built_in">pop</span>();</span><br><span class="line">        now --;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>题解</category>
+      </categories>
+      <tags>
+        <tag>贪心</tag>
+        <tag>优先队列</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>abc380_d Strange Mirroring 题解</title>
+    <url>/2025/02/12/10/50/05/</url>
+    <content><![CDATA[<p>这题我第一次写了很久没写出来，印象中是通过数学来算每个索引是否需要翻转。再写的时候我是用倍增
++
+模拟给搞出来了，然后同时发现了左闭右开区间就是好用。<del>虽然最后还是花了我好久来推，还是不熟悉左开右闭。</del>最后看了题解
+&amp; 哥哥的代码才发现这题真的有意思</p>
+<span id="more"></span>
+<p>题目传送门</p>
+<h1 id="题目大意">题目大意</h1>
+<p>给定一个字符串 <span
+class="math inline">\(S\)</span>，由大写字母和小写字母组成。</p>
+<p>我们对 <span class="math inline">\(S\)</span> 执行以下操作 <span
+class="math inline">\(10^{100}\)</span> 次：</p>
+<ul>
+<li>首先，通过将字符串 <span class="math inline">\(S\)</span>
+中的大写字母变为小写字母，小写字母变为大写字母，创建一个新的字符串 <span
+class="math inline">\(T\)</span>。</li>
+<li>然后，按照顺序将 <span class="math inline">\(S\)</span> 和 <span
+class="math inline">\(T\)</span> 连接，形成一个新的字符串 <span
+class="math inline">\(S\)</span>。</li>
+</ul>
+<p>回答 <span class="math inline">\(Q\)</span> 个查询。第 <span
+class="math inline">\(i\)</span> 个查询是：</p>
+<ul>
+<li>找出经过所有操作完成后，<span class="math inline">\(S\)</span> 中第
+<span class="math inline">\(K_i\)</span> 个字符。</li>
+</ul>
+<h1 id="我的做法">我的做法</h1>
+<h2 id="思路">思路</h2>
+<p>就是先倍增，找到包含 <span class="math inline">\(K\)</span>
+的最小长度，然后来模拟依次往回推，过程挺好想，就是细节处理花的时间太久了。</p>
+<h2 id="代码">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    string s; cin &gt;&gt; s;</span><br><span class="line">    <span class="keyword">auto</span> f = [&amp;](i64 x) -&gt; <span class="type">char</span> &#123;</span><br><span class="line">        i64 sz = s.<span class="built_in">size</span>();</span><br><span class="line">        i64 len = s.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">while</span> (x &gt;= len) &#123;</span><br><span class="line">            len &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        len &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (x &gt;= sz) &#123;</span><br><span class="line">            x -= len;</span><br><span class="line">            ++ cnt;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (x &gt;= sz) &#123;</span><br><span class="line">            len &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (x &gt;= len) &#123;</span><br><span class="line">                x -= len;</span><br><span class="line">                ++ cnt;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (cnt &amp; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">islower</span>(s[x])) <span class="keyword">return</span> <span class="built_in">toupper</span>(s[x]);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">tolower</span>(s[x]);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> s[x];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="type">int</span> q; cin &gt;&gt; q;</span><br><span class="line">    <span class="keyword">while</span> (q --) &#123;</span><br><span class="line">        i64 x; cin &gt;&gt; x;</span><br><span class="line">        -- x;</span><br><span class="line">        cout &lt;&lt; <span class="built_in">f</span>(x) &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="官方题解做法">官方题解做法</h1>
+<h2 id="思路-1">思路</h2>
+<p>先看一共有多少块字符串，一开始的是第 0 块，然后扩展一下有 0 1
+块，再扩展一下有 0 1 2 3 块，每次扩展 长度 * 2 。</p>
+<p>然后对于第 <span class="math inline">\(i\)</span> 块，看 <span
+class="math inline">\(i\)</span> 的二进制表示，假设 <span
+class="math inline">\(i = 5\)</span> ，那么有 <span
+class="math inline">\(i = (101)_2\)</span> ，接下来从最高位的 1
+开始枚举，每次都减去对应位置的二的幂。</p>
+<p>例如： <span class="math inline">\(5 - 2^2 = 1 \rightarrow 1 - 1^1 =
+0\)</span> ，总共经历了两次操作，对应的是 5 的二进制表示中 1 的个数</p>
+<p>注意到，当 1 的个数为奇数时候，对应位置字母要翻转，偶数就不用。</p>
+<h2 id="代码-1">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">flip</span><span class="params">(<span class="type">char</span> c)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(<span class="string">&#x27;a&#x27;</span>&lt;=c &amp;&amp; c&lt;=<span class="string">&#x27;z&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> (c-<span class="string">&#x27;a&#x27;</span>)+<span class="string">&#x27;A&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="built_in">return</span> (c-<span class="string">&#x27;A&#x27;</span>)+<span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  string s;</span><br><span class="line">  cin &gt;&gt; s;</span><br><span class="line">  <span class="type">int</span> q;</span><br><span class="line">  cin &gt;&gt; q;</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;q;i++)&#123;</span><br><span class="line">    <span class="keyword">if</span>(i)&#123;cout &lt;&lt; <span class="string">&quot; &quot;</span>;&#125;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> k;</span><br><span class="line">    cin &gt;&gt; k;</span><br><span class="line">    k--;</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> blk=k/s.<span class="built_in">size</span>();</span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> pt=k%s.<span class="built_in">size</span>();</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">popcount</span>((<span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span>)blk)%<span class="number">2</span>)&#123;</span><br><span class="line">    <span class="comment">// if(__builtin_popcountll(blk)%2)&#123;</span></span><br><span class="line">    <span class="comment">// if(__builtin_parityll(blk))&#123;</span></span><br><span class="line">      cout &lt;&lt; <span class="built_in">flip</span>(s[pt]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">      cout &lt;&lt; s[pt];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="jiangly-的">jiangly 的</h3>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="keyword">using</span> u64 = <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="keyword">using</span> u32 = <span class="type">unsigned</span>;</span><br><span class="line"><span class="keyword">using</span> u128 = <span class="type">unsigned</span> __int128;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    std::cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    </span><br><span class="line">    std::string S;</span><br><span class="line">    std::cin &gt;&gt; S;</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> Q;</span><br><span class="line">    std::cin &gt;&gt; Q;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; Q; i++) &#123;</span><br><span class="line">        i64 K;</span><br><span class="line">        std::cin &gt;&gt; K;</span><br><span class="line">        K--;</span><br><span class="line">        </span><br><span class="line">        <span class="type">char</span> c = S[K % S.<span class="built_in">size</span>()];</span><br><span class="line">        K /= S.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">if</span> (__builtin_parityll(K)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (std::<span class="built_in">islower</span>(c)) &#123;</span><br><span class="line">                c = std::<span class="built_in">toupper</span>(c);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                c = std::<span class="built_in">tolower</span>(c);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        std::cout &lt;&lt; c &lt;&lt; <span class="string">&quot; \n&quot;</span>[i == Q - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
+    <title>洛谷P1433-吃奶酪</title>
+    <url>/2025/01/20/05/58/12/</url>
+    <content><![CDATA[<p>这道题在新手题单里面卡了我两个月，原因就是这道题出现在了搜索的板块，但是正规做法是用状态压缩dp来做，于是我就一直搁着，最近算是终于给他解决了，其实这道题本质是和<a href="/2025/01/23/00/35/23/" title="最短Hamilton距离">最短Hamilton距离</a>完全一样，就最后一步有点变化。</p>
+<span id="more"></span>
+<h1 id="吃奶酪"><a
+href="https://www.luogu.com.cn/problem/P1433">吃奶酪</a></h1>
+<h2 id="代码">代码</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">17</span>;</span><br><span class="line"><span class="type">double</span> dp[<span class="number">1</span>&lt;&lt;N][N];</span><br><span class="line"><span class="type">double</span> dis[N][N];</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">memset</span>(dp, <span class="number">0x7f</span>, <span class="built_in">sizeof</span>(dp));</span><br><span class="line">    <span class="type">int</span> n; cin &gt;&gt; n; ++n;</span><br><span class="line">    vector&lt;pair&lt;<span class="type">double</span>, <span class="type">double</span>&gt;&gt; <span class="built_in">a</span>(n<span class="number">+1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">1</span>;i&lt;n;++i) &#123;</span><br><span class="line">        cin &gt;&gt; a[i].first &gt;&gt; a[i].second;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">            dis[i][j] = <span class="built_in">hypot</span>(a[i].first - a[j].first, a[i].second - a[j].second);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    dp[<span class="number">1</span>][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> s=<span class="number">1</span>;s&lt;(<span class="number">1</span>&lt;&lt;n);++s) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> ((s &gt;&gt; i) &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j) &#123;</span><br><span class="line">                    <span class="keyword">if</span> ((s^(<span class="number">1</span>&lt;&lt;i)) &gt;&gt; j &amp; <span class="number">1</span>) &#123;</span><br><span class="line">                        dp[s][i] = <span class="built_in">min</span>(dp[s][i], dp[s^(<span class="number">1</span>&lt;&lt;i)][j] + dis[j][i]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">double</span> ans = INFINITY;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">        ans = <span class="built_in">min</span>(ans, dp[(<span class="number">1</span> &lt;&lt; n) - <span class="number">1</span>][i]);</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; fixed &lt;&lt; <span class="built_in">setprecision</span>(<span class="number">2</span>) &lt;&lt; ans &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>题解</category>
+      </categories>
+      <tags>
+        <tag>状压dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>git 常见用法</title>
+    <url>/2025/07/18/22/29/47/</url>
+    <content><![CDATA[<h2 id="引言">引言</h2>
+<p>Git
+是当今世界上最流行、最强大的分布式版本控制系统（DVCS）。无论你是个人开发者还是大型团队的一员，Git
+都能帮助你高效地管理项目代码、跟踪历史记录以及协作开发。本指南将介绍 Git
+的核心概念和最常见的命令，帮助你快速上手。</p>
+<h2 id="核心概念">核心概念</h2>
+<p>理解 Git 的三个主要区域至关重要：</p>
+<ol type="1">
+<li><strong>工作区 (Working
+Directory)</strong>：你正在编辑的本地项目目录。</li>
+<li><strong>暂存区 (Staging Area /
+Index)</strong>：一个文件，保存了下次将要提交的文件列表信息。</li>
+<li><strong>本地仓库 (Local
+Repository)</strong>：保存了项目所有版本历史记录的数据库，位于你的
+<code>.git</code> 目录中。</li>
+</ol>
+<p>基本的 Git 工作流程是：在工作区修改文件 -&gt;
+将修改的文件添加到暂存区 -&gt; 将暂存区的文件提交到本地仓库。</p>
+<h2 id="初始配置">初始配置</h2>
+<p>在开始使用 Git
+之前，你需要配置你的用户名和邮箱，这些信息会出现在你的每一次提交中。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;Your Name&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;youremail@example.com&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="基础命令">基础命令</h2>
+<h3 id="创建仓库">1. 创建仓库</h3>
+<ul>
+<li><strong>初始化新仓库</strong>: 在现有项目目录中创建一个新的 Git
+仓库。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure></li>
+<li><strong>克隆远程仓库</strong>: 从一个远程 URL 复制一个完整的 Git
+仓库。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;repository_url&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="日常工作流程">2. 日常工作流程</h3>
+<ul>
+<li><strong>查看状态</strong>: 检查工作区和暂存区的状态。
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure></li>
+<li><strong>暂存文件</strong>: 将文件的更改添加到暂存区。
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 暂存指定文件</span></span><br><span class="line">git add &lt;file_name&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 暂存所有已修改和新添加的文件</span></span><br><span class="line">git add .</span><br></pre></td></tr></table></figure></li>
+<li><strong>提交更改</strong>:
+将暂存区的内容提交到本地仓库，并附上描述性消息。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git commit -m <span class="string">&quot;Your descriptive commit message&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>查看历史</strong>: 查看提交日志。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 显示完整的提交历史</span></span><br><span class="line">git <span class="built_in">log</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 以更简洁的单行格式显示</span></span><br><span class="line">git <span class="built_in">log</span> --oneline</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示分支图</span></span><br><span class="line">git <span class="built_in">log</span> --graph --oneline --all</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="分支管理-branching">分支管理 (Branching)</h2>
+<p>分支是 Git
+的核心特性之一，它允许你在一个独立的环境中开发新功能，而不会影响主线（通常是
+<code>main</code> 或 <code>master</code> 分支）。</p>
+<h3 id="查看与创建分支">1. 查看与创建分支</h3>
+<ul>
+<li><strong>列出所有分支</strong>: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch</span><br></pre></td></tr></table></figure></li>
+<li><strong>创建一个新分支</strong>: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch &lt;branch_name&gt;</span><br></pre></td></tr></table></figure></li>
+<li><strong>创建并切换到新分支</strong>: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -b &lt;branch_name&gt;</span><br><span class="line"><span class="comment"># 或者使用新命令 (Git 2.23+)</span></span><br><span class="line">git switch -c &lt;branch_name&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="切换分支">2. 切换分支</h3>
+<ul>
+<li><strong>切换到已存在的分支</strong>: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout &lt;branch_name&gt;</span><br><span class="line"><span class="comment"># 或者使用新命令</span></span><br><span class="line">git switch &lt;branch_name&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="合并分支">3. 合并分支</h3>
+<ul>
+<li><strong>合并分支</strong>: 将指定分支的历史记录合并到当前分支。
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 首先，切换到你想要合并入的目标分支，例如 main</span></span><br><span class="line">git switch main</span><br><span class="line"></span><br><span class="line"><span class="comment"># 然后，执行合并命令</span></span><br><span class="line">git merge &lt;feature_branch_name&gt;</span><br></pre></td></tr></table></figure> 如果出现冲突 (conflicts)，Git
+会提示你手动解决它们，然后再次提交。</li>
+</ul>
+<h3 id="删除分支">4. 删除分支</h3>
+<ul>
+<li><strong>删除已合并的分支</strong>: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -d &lt;branch_name&gt;</span><br></pre></td></tr></table></figure></li>
+<li><strong>强制删除未合并的分支</strong>: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git branch -D &lt;branch_name&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="远程协作">远程协作</h2>
+<p>为了与他人协作，你需要与远程仓库进行交互。</p>
+<h3 id="管理远程仓库">1. 管理远程仓库</h3>
+<ul>
+<li><strong>查看远程仓库</strong>: 列出你配置的每个远程仓库的简写。
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote -v</span><br></pre></td></tr></table></figure></li>
+<li><strong>添加远程仓库</strong>: <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add &lt;short_name&gt; &lt;url&gt;</span><br><span class="line"><span class="comment"># 例如: git remote add origin https://github.com/user/repo.git</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="同步数据">2. 同步数据</h3>
+<ul>
+<li><strong>推送 (Push)</strong>: 将你的本地分支提交推送到远程仓库。
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push &lt;remote_name&gt; &lt;branch_name&gt;</span><br><span class="line"><span class="comment"># 例如: git push origin main</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>拉取 (Pull)</strong>:
+从远程仓库获取最新版本并自动合并到当前分支。这相当于
+<code>git fetch</code> + <code>git merge</code>。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull &lt;remote_name&gt; &lt;branch_name&gt;</span><br><span class="line"><span class="comment"># 例如: git pull origin main</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>获取 (Fetch)</strong>:
+从远程仓库下载所有分支和数据，但不会自动合并。这允许你在合并前先查看更改。
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git fetch &lt;remote_name&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="撤销操作">撤销操作</h2>
+<ul>
+<li><strong>撤销工作区的修改</strong>:
+丢弃某个文件的本地修改，恢复到最近一次提交的状态。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git checkout -- &lt;file_name&gt;</span><br></pre></td></tr></table></figure></li>
+<li><strong>取消暂存</strong>: 将文件从暂存区移回工作区。
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git reset HEAD &lt;file_name&gt;</span><br></pre></td></tr></table></figure></li>
+<li><strong>重置提交 (Reset)</strong>:
+撤销最近的提交。<code>--soft</code>, <code>--mixed</code>,
+<code>--hard</code> 三种模式有不同效果，请谨慎使用。 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 仅撤销提交，保留更改在暂存区</span></span><br><span class="line">git reset --soft HEAD~1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 撤销提交和暂存，保留更改在工作区 (默认)</span></span><br><span class="line">git reset --mixed HEAD~1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 彻底丢弃提交和所有更改 (危险操作)</span></span><br><span class="line">git reset --hard HEAD~1</span><br></pre></td></tr></table></figure></li>
+<li><strong>反转提交 (Revert)</strong>:
+创建一个新的提交来撤销某个历史提交的更改，这是一种更安全的方式，因为它不会改变项目历史。
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git revert &lt;commit_hash&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>指南</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Markdown 中 LaTeX 数学公式常用符号</title>
+    <url>/2025/01/27/13/27/03/</url>
+    <content><![CDATA[<h2 id="引言">引言</h2>
+<p>在 Markdown 中，我们可以借助 MathJax 或 KaTeX 等工具来渲染 LaTeX
+格式的数学公式。这使得在技术博客、学术笔记和在线文档中展示复杂的数学表达式变得非常方便。公式分为两种：</p>
+<ol type="1">
+<li><strong>行内公式</strong>：使用一对美元符号 <code>$...$</code>
+包裹，嵌入在文本行中。例如 <code>f(x) = x^2</code> 会显示为 <span
+class="math inline">\(f(x) = x^2\)</span>。</li>
+<li><strong>块级公式</strong>：使用两对美元符号 <code>$$...$$</code>
+包裹，单独成行并居中显示。例如 <code>$$ \int_a^b f(x)dx $$</code>
+会显示为： <span class="math display">\[ \int_a^b f(x)dx \]</span></li>
+</ol>
+<p>下面是常用数学符号的 LaTeX 命令。</p>
+<h2 id="常用符号">常用符号</h2>
+<h3 id="希腊字母">1. 希腊字母</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">命令 (小写)</th>
+<th style="text-align: left;">显示</th>
+<th style="text-align: left;">命令 (大写)</th>
+<th style="text-align: left;">显示</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>\alpha</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\alpha\)</span></td>
+<td style="text-align: left;"><code>\Alpha</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(A\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\beta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\beta\)</span></td>
+<td style="text-align: left;"><code>\Beta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(B\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\gamma</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\gamma\)</span></td>
+<td style="text-align: left;"><code>\Gamma</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Gamma\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\delta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\delta\)</span></td>
+<td style="text-align: left;"><code>\Delta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Delta\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\epsilon</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\epsilon\)</span></td>
+<td style="text-align: left;"><code>\Epsilon</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(E\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\zeta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\zeta\)</span></td>
+<td style="text-align: left;"><code>\Zeta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(Z\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\eta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\eta\)</span></td>
+<td style="text-align: left;"><code>\Eta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(H\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\theta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\theta\)</span></td>
+<td style="text-align: left;"><code>\Theta</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Theta\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\iota</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\iota\)</span></td>
+<td style="text-align: left;"><code>\Iota</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(I\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\kappa</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\kappa\)</span></td>
+<td style="text-align: left;"><code>\Kappa</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(K\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\lambda</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\lambda\)</span></td>
+<td style="text-align: left;"><code>\Lambda</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Lambda\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\mu</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mu\)</span></td>
+<td style="text-align: left;"><code>\Mu</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(M\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\nu</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\nu\)</span></td>
+<td style="text-align: left;"><code>\Nu</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(N\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\xi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\xi\)</span></td>
+<td style="text-align: left;"><code>\Xi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Xi\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\pi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\pi\)</span></td>
+<td style="text-align: left;"><code>\Pi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Pi\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\rho</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\rho\)</span></td>
+<td style="text-align: left;"><code>\Rho</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(P\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\sigma</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\sigma\)</span></td>
+<td style="text-align: left;"><code>\Sigma</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Sigma\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\tau</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\tau\)</span></td>
+<td style="text-align: left;"><code>\Tau</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(T\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\upsilon</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\upsilon\)</span></td>
+<td style="text-align: left;"><code>\Upsilon</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Upsilon\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\phi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\phi\)</span></td>
+<td style="text-align: left;"><code>\Phi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Phi\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\chi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\chi\)</span></td>
+<td style="text-align: left;"><code>\Chi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(X\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\psi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\psi\)</span></td>
+<td style="text-align: left;"><code>\Psi</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Psi\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\omega</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\omega\)</span></td>
+<td style="text-align: left;"><code>\Omega</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Omega\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="运算符">2. 运算符</h3>
+<h4 id="基本运算">基本运算</h4>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">命令</th>
+<th style="text-align: left;">显示</th>
+<th style="text-align: left;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>+</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(+\)</span></td>
+<td style="text-align: left;">加</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>-</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(-\)</span></td>
+<td style="text-align: left;">减</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\times</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\times\)</span></td>
+<td style="text-align: left;">乘</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\div</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\div\)</span></td>
+<td style="text-align: left;">除</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\pm</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\pm\)</span></td>
+<td style="text-align: left;">正负</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\cdot</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\cdot\)</span></td>
+<td style="text-align: left;">点乘</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>*</code> or <code>\ast</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(*\)</span></td>
+<td style="text-align: left;">星号</td>
+</tr>
+</tbody>
+</table>
+<h4 id="比较运算">比较运算</h4>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">命令</th>
+<th style="text-align: left;">显示</th>
+<th style="text-align: left;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>&gt;</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(&gt;\)</span></td>
+<td style="text-align: left;">大于</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>&lt;</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(&lt;\)</span></td>
+<td style="text-align: left;">小于</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\ge</code> or <code>\geq</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\ge\)</span></td>
+<td style="text-align: left;">大于等于</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\le</code> or <code>\leq</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\le\)</span></td>
+<td style="text-align: left;">小于等于</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\ne</code> or <code>\neq</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\ne\)</span></td>
+<td style="text-align: left;">不等于</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\approx</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\approx\)</span></td>
+<td style="text-align: left;">约等于</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\equiv</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\equiv\)</span></td>
+<td style="text-align: left;">全等于</td>
+</tr>
+</tbody>
+</table>
+<h4 id="集合运算">集合运算</h4>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">命令</th>
+<th style="text-align: left;">显示</th>
+<th style="text-align: left;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>\in</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\in\)</span></td>
+<td style="text-align: left;">属于</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\notin</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\notin\)</span></td>
+<td style="text-align: left;">不属于</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\subset</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\subset\)</span></td>
+<td style="text-align: left;">子集</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\supset</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\supset\)</span></td>
+<td style="text-align: left;">父集</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\subseteq</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\subseteq\)</span></td>
+<td style="text-align: left;">真子集</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\supseteq</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\supseteq\)</span></td>
+<td style="text-align: left;">真父集</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\cup</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\cup\)</span></td>
+<td style="text-align: left;">并集</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\cap</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\cap\)</span></td>
+<td style="text-align: left;">交集</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\emptyset</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\emptyset\)</span></td>
+<td style="text-align: left;">空集</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\forall</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\forall\)</span></td>
+<td style="text-align: left;">任意</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\exists</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\exists\)</span></td>
+<td style="text-align: left;">存在</td>
+</tr>
+</tbody>
+</table>
+<h3 id="箭头">3. 箭头</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">命令</th>
+<th style="text-align: left;">显示</th>
+<th style="text-align: left;">命令</th>
+<th style="text-align: left;">显示</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>\leftarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\leftarrow\)</span></td>
+<td style="text-align: left;"><code>\rightarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\rightarrow\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\Leftarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Leftarrow\)</span></td>
+<td style="text-align: left;"><code>\Rightarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Rightarrow\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\leftrightarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\leftrightarrow\)</span></td>
+<td style="text-align: left;"><code>\Leftrightarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Leftrightarrow\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\uparrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\uparrow\)</span></td>
+<td style="text-align: left;"><code>\downarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\downarrow\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\Uparrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Uparrow\)</span></td>
+<td style="text-align: left;"><code>\Downarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Downarrow\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\updownarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\updownarrow\)</span></td>
+<td style="text-align: left;"><code>\Updownarrow</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\Updownarrow\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="分数上下标根号">4. 分数、上下标、根号</h3>
+<ul>
+<li><strong>分数</strong>: <code>\frac&#123;分子&#125;&#123;分母&#125;</code>。例如
+<code>\frac&#123;a+b&#125;&#123;c&#125;</code> 显示为 <span
+class="math inline">\(\frac{a+b}{c}\)</span>。</li>
+<li><strong>上下标</strong>: <code>^</code> 表示上标, <code>_</code>
+表示下标。如果内容多于一个字符，需用 <code>&#123;&#125;</code> 包裹。例如
+<code>x_i^2</code> 显示为 <span
+class="math inline">\(x_i^2\)</span>，<code>e^&#123;i\pi&#125; + 1 = 0</code>
+显示为 <span class="math inline">\(e^{i\pi} + 1 = 0\)</span>。</li>
+<li><strong>根号</strong>: <code>\sqrt&#123;表达式&#125;</code>。例如
+<code>\sqrt&#123;b^2-4ac&#125;</code> 显示为 <span
+class="math inline">\(\sqrt{b^2-4ac}\)</span>。n 次方根使用
+<code>\sqrt[n]&#123;表达式&#125;</code>，例如 <code>\sqrt[3]&#123;8&#125;</code> 显示为
+<span class="math inline">\(\sqrt[3]{8}\)</span>。</li>
+</ul>
+<h3 id="微积分与求和">5. 微积分与求和</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">命令</th>
+<th style="text-align: left;">显示</th>
+<th style="text-align: left;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>\int</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\int\)</span></td>
+<td style="text-align: left;">不定积分</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\int_a^b</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\int_a^b\)</span></td>
+<td style="text-align: left;">定积分</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\sum</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\sum\)</span></td>
+<td style="text-align: left;">求和</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\sum_&#123;i=1&#125;^n</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\sum_{i=1}^n\)</span></td>
+<td style="text-align: left;">带范围求和</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\prod</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\prod\)</span></td>
+<td style="text-align: left;">连乘</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\lim_&#123;x \to \infty&#125;</code></td>
+<td style="text-align: left;"><span class="math inline">\(\lim_{x \to
+\infty}\)</span></td>
+<td style="text-align: left;">极限</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\partial</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\partial\)</span></td>
+<td style="text-align: left;">偏导</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\nabla</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\nabla\)</span></td>
+<td style="text-align: left;">梯度</td>
+</tr>
+</tbody>
+</table>
+<h3 id="矩阵">6. 矩阵</h3>
+<p>需要使用 <code>\begin&#123;matrix&#125; ... \end&#123;matrix&#125;</code> 环境。用
+<code>&amp;</code> 分隔列，用 <code>\\</code> 分隔行。</p>
+<figure class="highlight latex"><table><tr><td class="code"><pre><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br><span class="line"><span class="keyword">\begin</span>&#123;matrix&#125;</span><br><span class="line">1 <span class="built_in">&amp;</span> 2 <span class="built_in">&amp;</span> 3 <span class="keyword">\\</span></span><br><span class="line">4 <span class="built_in">&amp;</span> 5 <span class="built_in">&amp;</span> 6 <span class="keyword">\\</span></span><br><span class="line">7 <span class="built_in">&amp;</span> 8 <span class="built_in">&amp;</span> 9</span><br><span class="line"><span class="keyword">\end</span>&#123;matrix&#125;</span><br><span class="line"><span class="built_in">$</span><span class="built_in">$</span></span><br></pre></td></tr></table></figure>
+<p><span class="math display">\[
+\begin{matrix}
+1 &amp; 2 &amp; 3 \\
+4 &amp; 5 &amp; 6 \\
+7 &amp; 8 &amp; 9
+\end{matrix}
+\]</span></p>
+<p>可以给矩阵添加不同类型的括号： - <code>pmatrix</code> (小括号): <span
+class="math inline">\(\begin{pmatrix} 1 &amp; 2 \\ 3 &amp; 4
+\end{pmatrix}\)</span> - <code>bmatrix</code> (中括号): <span
+class="math inline">\(\begin{bmatrix} 1 &amp; 2 \\ 3 &amp; 4
+\end{bmatrix}\)</span> - <code>vmatrix</code> (竖线): <span
+class="math inline">\(\begin{vmatrix} 1 &amp; 2 \\ 3 &amp; 4
+\end{vmatrix}\)</span></p>
+<h3 id="其他常用符号">7. 其他常用符号</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">命令</th>
+<th style="text-align: left;">显示</th>
+<th style="text-align: left;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>\dots</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\dots\)</span></td>
+<td style="text-align: left;">省略号 (底线)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\cdots</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\cdots\)</span></td>
+<td style="text-align: left;">省略号 (中线)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\vdots</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\vdots\)</span></td>
+<td style="text-align: left;">垂直省略号</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\ddots</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\ddots\)</span></td>
+<td style="text-align: left;">对角省略号</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\infty</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\infty\)</span></td>
+<td style="text-align: left;">无穷大</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\hbar</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\hbar\)</span></td>
+<td style="text-align: left;">普朗克常数</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\angle</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\angle\)</span></td>
+<td style="text-align: left;">角度</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\triangle</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\triangle\)</span></td>
+<td style="text-align: left;">三角形</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\hat&#123;a&#125;</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\hat{a}\)</span></td>
+<td style="text-align: left;">帽子</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\tilde&#123;a&#125;</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\tilde{a}\)</span></td>
+<td style="text-align: left;">波浪线</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\bar&#123;a&#125;</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\bar{a}\)</span></td>
+<td style="text-align: left;">上划线</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\vec&#123;a&#125;</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\vec{a}\)</span></td>
+<td style="text-align: left;">向量</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>\mathbb&#123;R&#125;</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathbb{R}\)</span></td>
+<td style="text-align: left;">实数集 (需要 amsmath)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>\mathcal&#123;F&#125;</code></td>
+<td style="text-align: left;"><span
+class="math inline">\(\mathcal{F}\)</span></td>
+<td style="text-align: left;">花体</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+      <categories>
+        <category>指南</category>
+      </categories>
+      <tags>
+        <tag>latex</tag>
+        <tag>markdown</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>解决 neovide 的部分图标缺失问题</title>
+    <url>/2025/01/23/07/01/40/</url>
+    <content><![CDATA[<p>由于默认 neovide
+字体图标不全导致部分图标以<strong>小飞船</strong>的形式出现，我们可以通过下载
+Nerd Font 字体来解决这个问题。</p>
+<span id="more"></span>
+<h1 id="乱码展示">乱码展示</h1>
+<p>以下为乱码，可以看到都是以小飞船的图标展示</p>
+<p><img src="https://s2.loli.net/2025/01/23/5ZUGnpuSYiRk1lW.png" /></p>
+<p>以下为修复后的，所有字体都正常，并且保留了连字功能</p>
+<p><img src="https://s2.loli.net/2025/01/23/BMdXxDhgKiO2sW6.png" /></p>
+<h1 id="下载字体">下载字体</h1>
+<p>前往 <span class="exturl" data-url="aHR0cHM6Ly93d3cubmVyZGZvbnRzLmNvbS9mb250LWRvd25sb2Fkcw==">Nerd Font
+官网的下载页面<i class="fa fa-external-link-alt"></i></span>，找到 FiraCode Nerd Font
+字体（该字体支持连字）下载。</p>
+<p><img src="https://s2.loli.net/2025/01/23/XPDBTsGlf57cAKS.png" /></p>
+<p>下载后解压文件，全选右键安装</p>
+<p><img src="https://s2.loli.net/2025/01/23/bwJUmuHAflKzjxe.png" /></p>
+<h1 id="配置neovim">配置neovim</h1>
+<p>在 neovim 的配置文件中加入这段代码来设置 neovide
+字体，重启即可生效</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> vim.g.neovide <span class="keyword">then</span> <span class="comment">-- 只对 neovide 起作用</span></span><br><span class="line">    vim.o.guifont = <span class="string">&quot;FiraCode Nerd Font:h14&quot;</span> <span class="comment">-- text below applies for VimScript</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>neovim</tag>
+        <tag>neovide</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>给 neovim 加上 DeepSeek AI 助手来高效编辑代码</title>
+    <url>/2025/01/27/13/27/03/</url>
+    <content><![CDATA[<p>最近出的 <span class="exturl" data-url="aHR0cHM6Ly9jaGF0LmRlZXBzZWVrLmNvbS8=">DeepSeek<i class="fa fa-external-link-alt"></i></span>
+我也小试了一下，确实挺好用的，关键是 API 真的便宜，刚好我也老早就想在
+Neovim 里接入一个 AI ，现在正是实现的好时机</p>
+<span id="more"></span>
+<h1 id="注册-deepseek">注册 deepseek</h1>
+<p>这一步没什么好说的，注册就完了</p>
+<h1 id="给-neovim-添加-avanate-插件">给 neovim 添加 <a
+href="https://github.com/yetone/avante.nvim">avanate</a> 插件</h1>
+<blockquote>
+<p>avante.nvim 是一个 Neovim 插件，旨在模拟 Cursor AI IDE 的行为。
+它为用户提供人工智能驱动的代码建议，并能以最小的代价将这些建议直接应用到源文件中。</p>
+</blockquote>
+<p>简而言之，就是为 neovim 提供了接入各种 ai
+的接口，这里我们可以直接用以下代码来安装</p>
+<p><strong>注意</strong>：这里只提供 Lazy
+插件管理器的安装方式，其他方式请自行设置。并且同为 Lazy
+插件管理器也可能因为插件组织方式不同有所差异，以下为单文件插件管理方式</p>
+<p>在 neovim 配置目录下对应的 plugins 目录下新建 avante.lua
+文件，加入以下内容，保存重启 neovim 即可自动安装</p>
+<figure class="highlight lua"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> &#123;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;yetone/avante.nvim&quot;</span>,</span><br><span class="line">        event = <span class="string">&quot;VeryLazy&quot;</span>,</span><br><span class="line">        lazy = <span class="literal">false</span>,</span><br><span class="line">        version = <span class="literal">false</span>, <span class="comment">-- set this if you want to always pull the latest change</span></span><br><span class="line">        opts = &#123;</span><br><span class="line">            provider = <span class="string">&quot;openai&quot;</span>,</span><br><span class="line">            auto_suggestions_provider = <span class="string">&quot;openai&quot;</span>, <span class="comment">-- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot</span></span><br><span class="line">            openai = &#123;</span><br><span class="line">                endpoint = <span class="string">&quot;https://api.deepseek.com&quot;</span>,</span><br><span class="line">                model = <span class="string">&quot;deepseek-chat&quot;</span>,</span><br><span class="line">                timeout = <span class="number">30000</span>, <span class="comment">-- Timeout in milliseconds</span></span><br><span class="line">                temperature = <span class="number">0</span>,</span><br><span class="line">                max_tokens = <span class="number">4096</span>,</span><br><span class="line">                <span class="comment">-- optional</span></span><br><span class="line">                api_key_name = <span class="string">&quot;DEEPSEEK_API_KEY&quot;</span>, <span class="comment">-- default OPENAI_API_KEY if not set</span></span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="comment">-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`</span></span><br><span class="line">        build = <span class="string">&quot;make&quot;</span>,</span><br><span class="line">        <span class="comment">-- build = &quot;powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false&quot; -- for windows</span></span><br><span class="line">        dependencies = &#123;</span><br><span class="line">            <span class="string">&quot;nvim-treesitter/nvim-treesitter&quot;</span>,</span><br><span class="line">            <span class="string">&quot;stevearc/dressing.nvim&quot;</span>,</span><br><span class="line">            <span class="string">&quot;nvim-lua/plenary.nvim&quot;</span>,</span><br><span class="line">            <span class="string">&quot;MunifTanjim/nui.nvim&quot;</span>,</span><br><span class="line">            <span class="comment">--- The below dependencies are optional,</span></span><br><span class="line">            <span class="string">&quot;nvim-tree/nvim-web-devicons&quot;</span>, <span class="comment">-- or echasnovski/mini.icons</span></span><br><span class="line">            <span class="string">&quot;hrsh7th/nvim-cmp&quot;</span>,            <span class="comment">-- autocompletion for avante commands and mentions</span></span><br><span class="line">            <span class="string">&quot;zbirenbaum/copilot.lua&quot;</span>,      <span class="comment">-- for providers=&#x27;copilot&#x27;</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">-- support for image pasting</span></span><br><span class="line">                <span class="string">&quot;HakonHarnes/img-clip.nvim&quot;</span>,</span><br><span class="line">                event = <span class="string">&quot;VeryLazy&quot;</span>,</span><br><span class="line">                opts = &#123;</span><br><span class="line">                    <span class="comment">-- recommended settings</span></span><br><span class="line">                    default = &#123;</span><br><span class="line">                        embed_image_as_base64 = <span class="literal">false</span>,</span><br><span class="line">                        prompt_for_file_name = <span class="literal">false</span>,</span><br><span class="line">                        drag_and_drop = &#123;</span><br><span class="line">                            insert_mode = <span class="literal">true</span>,</span><br><span class="line">                        &#125;,</span><br><span class="line">                        <span class="comment">-- required for Windows users</span></span><br><span class="line">                        use_absolute_path = <span class="literal">true</span>,</span><br><span class="line">                    &#125;,</span><br><span class="line">                &#125;,</span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">-- Make sure to set this up properly if you have lazy=true</span></span><br><span class="line">                <span class="string">&#x27;MeanderingProgrammer/render-markdown.nvim&#x27;</span>,</span><br><span class="line">                opts = &#123;</span><br><span class="line">                    file_types = &#123; <span class="string">&quot;markdown&quot;</span>, <span class="string">&quot;Avante&quot;</span> &#125;,</span><br><span class="line">                &#125;,</span><br><span class="line">                ft = &#123; <span class="string">&quot;markdown&quot;</span>, <span class="string">&quot;Avante&quot;</span> &#125;,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="设置-api_key">设置 API_KEY</h1>
+<h2 id="获取-api_key">获取 API_KEY</h2>
+<p>前往 <span class="exturl" data-url="aHR0cHM6Ly9wbGF0Zm9ybS5kZWVwc2Vlay5jb20vYXBpX2tleXM=">deepseek
+开放平台<i class="fa fa-external-link-alt"></i></span> 登陆自己账号。初始用户会有 10￥ 的赠送额度，点击创建API key
+即可，生成 api key 后请妥善保存，退出后就无法重新查看</p>
+<h2 id="设置系统变量">设置系统变量</h2>
+<p>不设置系统变量的情况下，每次重新进入 neovim 调用 avanate
+都要重新输入一遍 API KEY，设置后即可自动获取。</p>
+<h3 id="windows-系统">windows 系统</h3>
+<p>直接进入系统环境变量设置窗口，添加变量 <code>DEEPSEEK_API_KEY</code>
+，设置值为刚刚创建的 api key</p>
+<h3 id="linux-系统">linux 系统</h3>
+<p>编辑 <code>/etc/environment</code> 文件，加入
+<code>DEEPSEEK_API_KEY='api_key'</code> ，等号后面的
+<code>api_key</code> 替换为刚刚创建的 api key ，随后保存重启系统即可</p>
+<h1 id="使用">使用</h1>
+<p><strong><code>&lt;leader&gt;</code>
+键是自定义的，一般情况下是空格键</strong></p>
+<ul>
+<li>进入 neovim 后，按下 <code>&lt;leader&gt;aa</code>
+即可打开对话窗口</li>
+</ul>
+<p>其余更多使用方式请查阅 <a
+href="https://github.com/yetone/avante.nvim">avante 官方仓库</a></p>
+<h1 id="效果展示">效果展示</h1>
+<p><img src="https://s2.loli.net/2025/01/27/Jazp8GWFikhym4B.png" /></p>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>neovim</tag>
+        <tag>deepseek</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>牛客多校训练赛2025第一场题解</title>
+    <url>/2025/07/18/22/15/17/</url>
+    <content><![CDATA[<span id="more"></span>
+<blockquote>
+<p>题目顺序按照个人主观难度排序</p>
+</blockquote>
+<h1 id="g">G</h1>
+<h2 id="思路">思路</h2>
+<p>对于一个连续匹配的个数，答案就是 <span
+class="math inline">\((\frac{cnt * (cnt + 1)}{2})\)</span></p>
+<p>把所有连续匹配的个数，累加起来就是最终答案</p>
+<p><strong>别忘了开 long long</strong></p>
+<h2 id="代码实现">代码实现</h2>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> i64 = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function">i64 <span class="title">solve</span><span class="params">(string s, string t)</span> </span>&#123;</span><br><span class="line">    i64 ans = <span class="number">0</span>;</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">a</span><span class="params">(<span class="number">1</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> i = <span class="number">0</span>; i &lt; t.<span class="built_in">size</span>() &amp;&amp; i &lt; s.<span class="built_in">size</span>(); i ++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (s[i] == t[i])</span><br><span class="line">            a.<span class="built_in">back</span>()++;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (a.<span class="built_in">back</span>())</span><br><span class="line">            a.<span class="built_in">push_back</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x : a) &#123;</span><br><span class="line">        ans += <span class="number">1LL</span> * (x + <span class="number">1</span>) * x / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> n, q;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; q;</span><br><span class="line">    string s;</span><br><span class="line">    cin &gt;&gt; s;</span><br><span class="line">    <span class="keyword">while</span> (q--) &#123;</span><br><span class="line">        string t;</span><br><span class="line">        <span class="type">int</span> a;</span><br><span class="line">        cin &gt;&gt; t &gt;&gt; a;</span><br><span class="line"></span><br><span class="line">        i64 ans = <span class="number">0</span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">b</span><span class="params">(<span class="number">1</span>, <span class="number">0</span>)</span></span>;</span><br><span class="line">        cout &lt;&lt; <span class="built_in">solve</span>(s.<span class="built_in">substr</span>(a - <span class="number">1</span>), t) &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>题解</category>
+      </categories>
+      <tags>
+        <tag>算法竞赛</tag>
+      </tags>
+  </entry>
+</search>
